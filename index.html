@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- Primary title & description (visible in search results) -->
+  <title>ZentroTools — Fast online calculators, converters & gaming tools</title>
+  <meta name="description" content="ZentroTools offers fast, mobile-first tools — age & percentage calculators, CPS tester, reaction time, aim trainer, Minecraft converters and more." />
+  <meta name="keywords" content="online tools, age calculator, percentage calculator, cps tester, reaction time test, aim trainer, minecraft tools, bmi calculator, unit converter, random number generator, timer" />
+  <meta name="author" content="ZentroTools" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#021021" />
+
+  <!-- Canonical (replace with your domain after you get it) -->
+  <!-- Example: <link rel="canonical" href="https://zentrotools.xyz/"> -->
+  <link rel="canonical" href="REPLACE_WITH_YOUR_DOMAIN">
+
+  <!-- Open Graph (Facebook, WhatsApp, etc.) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ZentroTools — Fast online calculators & gaming tools" />
+  <meta property="og:description" content="Access small, useful online tools: CPS tester, Age & Percentage calculators, BMI, Minecraft coordinate converter, Aim Trainer and more — built mobile-first." />
+  <!-- Replace with your full image URL after deploying (recommended 1200x630) -->
+  <meta property="og:image" content="/thumbnail.jpg" />
+  <meta property="og:image:alt" content="ZentroTools — online tools preview" />
+  <meta property="og:url" content="REPLACE_WITH_YOUR_DOMAIN" />
+  <meta property="og:site_name" content="ZentroTools" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ZentroTools — Fast online calculators & gaming tools" />
+  <meta name="twitter:description" content="Access small, useful online tools: CPS tester, Age & Percentage calculators, BMI, Minecraft converter, Aim Trainer and more — mobile friendly." />
+  <meta name="twitter:image" content="/thumbnail.jpg" />
+  <meta name="twitter:creator" content="@zentrotools" />
+
+  <!-- Favicon (place a 32x32 favicon at /favicon.ico) -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="/favicon-192.png">
+
+  <!-- Structured data (JSON-LD) to help search engines understand site -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "ZentroTools",
+    "url": "REPLACE_WITH_YOUR_DOMAIN",
+    "description": "Fast, mobile-first online tools: calculators, converters and small gaming practice utilities.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "REPLACE_WITH_YOUR_DOMAIN/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <style>
+    /* ---------- Variables ---------- */
+    :root{
+      --bg-1: #0ea5e9;
+      --bg-2: #020617;
+      --card: rgba(8,12,20,0.85);
+      --glass: rgba(255,255,255,0.03);
+      --accent: #38bdf8;
+      --muted: #9fb0ba;
+      --title: #bfefff;
+      --max-width: 980px;
+      --radius: 14px;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    }
+
+    /* ---------- Reset ---------- */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    a{color:inherit;text-decoration:none}
+
+    /* ---------- Page background ---------- */
+    body{
+      background:
+        radial-gradient(1200px 500px at 10% 6%, rgba(14,165,233,0.20) 0%, transparent 18%),
+        radial-gradient(900px 360px at 90% 92%, rgba(43,214,255,0.08) 0%, transparent 24%),
+        linear-gradient(180deg,var(--bg-1),var(--bg-2));
+      background-attachment:fixed;
+      color: #e6f7fb;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:28px 18px;
+    }
+
+    /* ---------- Layout wrapper ---------- */
+    .wrap{
+      width:100%;
+      max-width:var(--max-width);
+      margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      align-items:stretch;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:18px;
+      border-radius:var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border: 1px solid var(--glass);
+      box-shadow: 0 10px 30px rgba(2,6,12,0.6);
+      backdrop-filter: blur(6px);
+    }
+
+    .brand {
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    .logo {
+      width:56px;
+      height:56px;
+      border-radius:10px;
+      background: linear-gradient(90deg,#00e5ff,#2bd6ff);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      color:#001;
+      font-family:monospace;
+      box-shadow:0 6px 16px rgba(0,0,0,0.45);
+    }
+
+    .title-group {
+      display:flex;
+      flex-direction:column;
+      line-height:1;
+    }
+
+    .site-title {
+      font-size:20px;
+      color:var(--title);
+      font-weight:800;
+      letter-spacing:0.04em;
+      text-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
+
+    .subtitle {
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .right-meta {
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .badge {
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.04);
+      color:var(--muted);
+      font-weight:700;
+      font-size:13px;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+
+    /* ---------- Main content ---------- */
+    main {
+      background: linear-gradient(180deg, rgba(8,12,20,0.88), rgba(4,8,16,0.78));
+      border-radius:18px;
+      padding:18px;
+      border:1px solid var(--glass);
+      box-shadow: 0 20px 60px rgba(2,6,12,0.6);
+    }
+
+    .intro {
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .intro h2 {
+      margin:0;
+      font-size:18px;
+      color:var(--accent);
+      font-weight:800;
+    }
+
+    .intro p {
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      max-width:920px;
+    }
+
+    /* ---------- Tools grid ---------- */
+    .tools {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:14px;
+      margin-top:10px;
+    }
+
+    .card {
+      background: rgba(6,10,18,0.65);
+      border-radius:12px;
+      padding:14px;
+      border: 1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+      transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(56,189,248,0.12);
+      box-shadow: 0 20px 50px rgba(2,6,12,0.6);
+    }
+
+    .card .tag {
+      font-size:11px;
+      color:var(--accent);
+      font-weight:800;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+    }
+
+    .card h3 {
+      margin:0;
+      font-size:15px;
+      font-weight:800;
+      color:#dff7ff;
+    }
+
+    .card p {
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .card .row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      margin-top:8px;
+    }
+
+    .btn {
+      background: linear-gradient(180deg,var(--accent), #5fd6ff);
+      color:#001;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:800;
+      border:0;
+      cursor:pointer;
+      font-size:13px;
+    }
+
+    .pill {
+      padding:6px 10px;
+      background:transparent;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.03);
+      color:var(--muted);
+      font-weight:700;
+      font-size:13px;
+    }
+
+    /* ---------- Footer ---------- */
+    footer{
+      margin-top:12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      color:var(--muted);
+      font-size:13px;
+      padding:10px 12px;
+      border-radius:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+      border:1px solid rgba(255,255,255,0.02);
+    }
+
+    .links{display:flex;gap:12px}
+    .links a{color:var(--muted);font-weight:700}
+
+    /* ---------- Responsive tweaks ---------- */
+    @media (max-width:520px){
+      header{padding:12px}
+      .logo{width:46px;height:46px}
+      .site-title{font-size:18px}
+      .tools{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">ZT</div>
+        <div class="title-group">
+          <div class="site-title">ZentroTools</div>
+          <div class="subtitle">Fast, mobile-first calculators, converters & gaming practice</div>
+        </div>
+      </div>
+
+      <div class="right-meta">
+        <div class="badge">Early access · v1.0</div>
+        <div style="color:var(--muted);font-weight:700;font-size:13px">Lightweight • Mobile friendly</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <h2>Smart mini tools for everyday use</h2>
+        <p>Collection of small, instant utilities — calculators, converters and gaming tools optimized for phones. Click any tool to open it (each link expects the matching .html file in the same folder).</p>
+      </section>
+
+      <section class="tools">
+
+        <!-- 1 -->
+        <article class="card">
+          <div class="tag">Live · Calculator</div>
+          <h3>Age Calculator</h3>
+          <p>Calculate exact age in years, months and days — mobile friendly.</p>
+          <div class="row">
+            <div class="pill">Utility</div>
+            <a class="btn" href="age-calculator.html">Open →</a>
+          </div>
+        </article>
+
+        <!-- 2 -->
+        <article class="card">
+          <div class="tag">Live · Calculator</div>
+          <h3>Perce1
