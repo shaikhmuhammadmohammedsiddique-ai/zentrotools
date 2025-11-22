@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Aim Trainer — Practice Aim & Accuracy | ZentroTools</title>
+
+<!-- SEO -->
+<meta name="description" content="Aim Trainer — practice aim with a simple, mobile-friendly target. Tracks hits, misses, accuracy and best score. Great for gamers and Minecraft PvP practice." />
+<meta name="keywords" content="aim trainer, aim practice, aim trainer online, accuracy tester, gaming aim trainer, click trainer" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#020617" />
+<link rel="canonical" href="https://zentrotools.xyz/aim-trainer.html" />
+
+<!-- Social preview -->
+<meta property="og:title" content="Aim Trainer — ZentroTools" />
+<meta property="og:description" content="Tap the target as it appears. Train aim and accuracy for gaming — mobile friendly. Tracks hits, misses, score and best attempts." />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ZentroTools" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Aim Trainer — ZentroTools" />
+<meta name="twitter:description" content="Tap the target as it appears. Train aim and accuracy for gaming — mobile friendly." />
+
+<style>
+:root{
+  --bg: linear-gradient(to bottom,#0ea5e9 0%, #020617 60%);
+  --card: rgba(15,23,42,0.96);
+  --accent: #38bdf8;
+  --muted: #9ca3af;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+html,body{height:100%;margin:0;background:var(--bg);color:#e6f7fb;-webkit-font-smoothing:antialiased}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;box-sizing:border-box}
+.card{width:100%;max-width:760px;background:var(--card);border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 18px 45px rgba(0,0,0,0.6)}
+.header{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,#00e5ff,#2bd6ff);display:flex;align-items:center;justify-content:center;font-weight:800;color:#001;font-family:monospace}
+h1{margin:0;font-size:20px;color:#00f0ff}
+.lead{margin:6px 0 12px;color:var(--muted);font-size:13px}
+
+/* top stats */
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.stat{flex:1;min-width:120px;background:rgba(255,255,255,0.02);padding:10px;border-radius:10px;text-align:center}
+.stat .value{font-size:18px;font-weight:800;color:#00f0ff}
+.stat .label{font-size:12px;color:#9fb0ba;margin-top:6px}
+
+/* play area */
+.play-area{margin-top:12px;display:flex;gap:12px}
+.left{flex:1;display:flex;flex-direction:column;gap:10px}
+.canvas-wrap{background:linear-gradient(180deg,rgba(0,0,0,0.06),rgba(0,0,0,0.02));border-radius:12px;padding:10px;display:flex;align-items:center;justify-content:center}
+#arena{width:100%;height:420px;border-radius:10px;background:linear-gradient(180deg,#07121a,#08121a);position:relative;overflow:hidden;touch-action:none}
+.controls{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.btn{padding:10px 12px;border-radius:10px;border:0;font-weight:800;cursor:pointer}
+.btn.primary{background:var(--accent);color:#001}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+.mode{display:flex;gap:6px;align-items:center}
+.right{width:240px;min-width:220px;display:flex;flex-direction:column;gap:10px}
+.h-title{font-size:13px;color:var(--muted);font-weight:700}
+
+/* target */
+.target{
+  position:absolute;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  user-select:none;touch-action:none;
+  box-shadow:0 10px 30px rgba(0,0,0,0.6), inset 0 4px 10px rgba(255,255,255,0.03);
+  cursor:crosshair;
+}
+.target .inner{width:60%;height:60%;border-radius:50%;background:rgba(0,0,0,0.18)}
+
+/* modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:999;display:none}
+.modal{background:#07111a;border-radius:12px;padding:16px;max-width:420px;width:100%;border:1px solid rgba(255,255,255,0.04)}
+.modal h3{margin:0;color:var(--accent);font-size:18px}
+.modal .row{display:flex;justify-content:space-between;margin-top:12px;color:#c8f7fb}
+.modal .actions{display:flex;gap:8px;margin-top:12px}
+.modal button{flex:1;padding:10px;border-radius:10px;border:0;cursor:pointer}
+.ok{background:var(--accent);color:#001;font-weight:800}
+.retry{background:#1f2937;color:#c8f7fb;border:1px solid rgba(255,255,255,0.03)}
+
+/* history */
+.history{margin-top:10px;max-height:220px;overflow:auto;padding-right:6px}
+.h-item{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+
+.back{display:block;margin-top:12px;text-align:center;color:var(--accent);text-decoration:none;font-weight:700}
+
+/* responsive */
+@media (max-width:880px){
+  .play-area{flex-direction:column}
+  .right{width:100%}
+  #arena{height:340px}
+}
+@media (max-width:520px){
+  #arena{height:300px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <main class="card" role="main" aria-label="Aim Trainer">
+    <div class="header">
+      <div class="logo">ZT</div>
+      <div>
+        <h1>Aim Trainer</h1>
+        <div class="lead">Tap the target as it appears. Train aim and accuracy for gaming — mobile friendly.</div>
+      </div>
+    </div>
+
+    <div class="stats" aria-hidden="false">
+      <div class="stat"><div class="value" id="score">0</div><div class="label">Score</div></div>
+      <div class="stat"><div class="value" id="hits">0</div><div class="label">Hits</div></div>
+      <div class="stat"><div class="value" id="accuracy">0%</div><div class="label">Accuracy</div></div>
+      <div class="stat"><div class="value" id="best">0</div><div class="label">Best</div></div>
+    </div>
+
+    <div class="play-area">
+      <div class="left">
+        <div class="canvas-wrap">
+          <div id="arena" tabindex="0" aria-label="Aim arena"></div>
+        </div>
+
+        <div class="controls">
+          <div class="mode" role="group" aria-label="Duration selector">
+            <label style="color:var(--muted);font-weight:700;margin-right:6px">Duration</label>
+            <select id="duration" class="btn ghost" style="padding:8px;border-radius:8px;background:transparent;color:inherit">
+              <option value="10">10s</option>
+              <option value="30" selected>30s</option>
+              <option value="60">60s</option>
+            </select>
+          </div>
+
+          <div style="display:flex;gap:8px">
+            <button id="startBtn" class="btn primary" aria-pressed="false">Start</button>
+            <button id="stopBtn" class="btn ghost" aria-pressed="false">Stop</button>
+          </div>
+        </div>
+
+        <div style="margin-top:8px;color:var(--muted);font-size:13px">Tip: Use a fingertip or mouse. Press Space to start.</div>
+      </div>
+
+      <div class="right">
+        <div class="h-title">Session Info</div>
+        <div style="background:rgba(255,255,255,0.02);padding:10px;border-radius:8px">
+          <div style="display:flex;justify-content:space-between"><div style="color:#9fb0ba">Time left</div><div id="timeLeft">--</div></div>
+          <div style="display:flex;justify-content:space-between;margin-top:6px"><div style="color:#9fb0ba">Misses</div><div id="misses">0</div></div>
+        </div>
+
+        <div class="h-title" style="margin-top:8px">History</div>
+        <div class="history" id="history" aria-live="polite"></div>
+
+        <a class="back" href="./index.html">← Back to Tools</a>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal-backdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true">
+    <h3>Session Complete</h3>
+    <div class="row"><div>Score</div><div id="modalScore">0</div></div>
+    <div class="row"><div>Hits</div><div id="modalHits">0</div></div>
+    <div class="row"><div>Accuracy</div><div id="modalAcc">0%</div></div>
+    <div class="actions">
+      <button class="ok" id="modalOk">OK</button>
+      <button class="retry" id="modalRetry">Retry</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const arena = document.getElementById('arena');
+  const startBtn = document.getElementById('startBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const durationSel = document.getElementById('duration');
+
+  const scoreEl = document.getElementById('score');
+  const hitsEl = document.getElementById('hits');
+  const accuracyEl = document.getElementById('accuracy');
+  const bestEl = document.getElementById('best');
+  const timeLeftEl = document.getElementById('timeLeft');
+  const missesEl = document.getElementById('misses');
+
+  const modal = document.getElementById('modal');
+  const modalScore = document.getElementById('modalScore');
+  const modalHits = document.getElementById('modalHits');
+  const modalAcc = document.getElementById('modalAcc');
+  const modalOk = document.getElementById('modalOk');
+  const modalRetry = document.getElementById('modalRetry');
+
+  const historyEl = document.getElementById('history');
+
+  // state
+  let running = false;
+  let roundTimer = null;
+  let spawnTimer = null;
+  let timeLeft = 0;
+  let hits = 0;
+  let misses = 0;
+  let score = 0;
+  let totalClicks = 0;
+  let best = 0;
+  let history = [];
+
+  // load best & history
+  try {
+    const sBest = localStorage.getItem('zt_aim_best');
+    if(sBest) best = parseInt(sBest,10) || 0;
+    const h = JSON.parse(localStorage.getItem('zt_aim_history') || '[]');
+    if(Array.isArray(h)) history = h;
+  } catch(e){ history = []; best = 0; }
+  bestEl.textContent = best;
+
+  renderHistory();
+  updateStats();
+
+  // helpers
+  function rand(min,max){ return Math.random()*(max-min)+min; }
+  function removeTargets(){ const t = arena.querySelectorAll('.target'); t.forEach(n=>n.remove()); }
+
+  function spawnTarget(){
+    removeTargets();
+    // random size between 36px and 90px
+    const size = Math.floor(rand(36, 90));
+    const rect = arena.getBoundingClientRect();
+    const maxX = Math.max(0, rect.width - size);
+    const maxY = Math.max(0, rect.height - size);
+    const x = Math.floor(rand(0, maxX));
+    const y = Math.floor(rand(0, maxY));
+
+    const target = document.createElement('div');
+    target.className = 'target';
+    target.style.width = size + 'px';
+    target.style.height = size + 'px';
+    target.style.left = x + 'px';
+    target.style.top = y + 'px';
+    target.style.background = 'radial-gradient(circle at 40% 30%, rgba(255,255,255,0.06), rgba(0,0,0,0.18)), linear-gradient(180deg,#ff7a7a,#ff3b3b)';
+    target.innerHTML = '<div class="inner"></div>';
+    arena.appendChild(target);
+
+    const onHit = (e) => {
+      e.stopPropagation();
+      hits++;
+      score += Math.max(1, Math.round(100 / (size/10))); // smaller target => more points
+      totalClicks++;
+      updateStats();
+      spawnTarget();
+    };
+    target.addEventListener('pointerdown', onHit, {passive:true});
+  }
+
+  function startSession(){
+    if(running) return;
+    running = true;
+    hits = 0; misses = 0; score = 0; totalClicks = 0;
+    const dur = parseInt(durationSel.value,10) || 30;
+    timeLeft = dur;
+    updateStats();
+    spawnTarget();
+    // spawn rate: change target every ~900ms keeps it fun
+    spawnTimer = setInterval(()=> {
+      spawnTarget();
+    }, 900);
+
+    roundTimer = setInterval(()=> {
+      timeLeft--;
+      timeLeftEl.textContent = timeLeft + 's';
+      if(timeLeft <= 0){
+        endSession();
+      }
+    }, 1000);
+
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+    arena.focus();
+  }
+
+  function endSession(){
+    running = false;
+    clearInterval(roundTimer); roundTimer = null;
+    clearInterval(spawnTimer); spawnTimer = null;
+    removeTargets();
+
+    const acc = totalClicks === 0 ? 0 : Math.round((hits/totalClicks)*100);
+    const finalScore = score;
+    if(finalScore > best){
+      best = finalScore;
+      localStorage.setItem('zt_aim_best', String(best));
+      bestEl.textContent = best;
+    }
+    const attempt = {score: finalScore, hits, misses, accuracy: acc, duration: parseInt(durationSel.value,10), date: new Date().toISOString()};
+    history.unshift(attempt);
+    if(history.length > 60) history.pop();
+    localStorage.setItem('zt_aim_history', JSON.stringify(history));
+    renderHistory();
+
+    modalScore.textContent = finalScore;
+    modalHits.textContent = hits;
+    modalAcc.textContent = acc + '%';
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden','false');
+
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    updateStats();
+  }
+
+  function stopSession(){
+    if(!running) return;
+    running = false;
+    clearInterval(roundTimer); roundTimer = null;
+    clearInterval(spawnTimer); spawnTimer = null;
+    removeTargets();
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    timeLeftEl.textContent = '--';
+    updateStats();
+  }
+
+  function updateStats(){
+    scoreEl.textContent = score;
+    hitsEl.textContent = hits;
+    missesEl.textContent = misses;
+    const acc = totalClicks === 0 ? 0 : Math.round((hits/totalClicks)*100);
+    accuracyEl.textContent = acc + '%';
+    missesEl.textContent = misses;
+    timeLeftEl.textContent = running ? (timeLeft + 's') : '--';
+  }
+
+  // arena miss detection: clicking arena (not target) counts as miss when running
+  arena.addEventListener('pointerdown', (e)=>{
+    if(!running) return;
+    if(e.target === arena || e.target === arena.parentElement){
+      misses++;
+      totalClicks++;
+      updateStats();
+    }
+  });
+
+  // start/stop buttons
+  startBtn.addEventListener('click', startSession);
+  stopBtn.addEventListener('click', stopSession);
+  stopBtn.disabled = true;
+
+  // modal buttons
+  modalOk.addEventListener('click', ()=> { modal.style.display = 'none'; modal.setAttribute('aria-hidden','true'); });
+  modalRetry.addEventListener('click', ()=> { modal.style.display = 'none'; modal.setAttribute('aria-hidden','true'); setTimeout(()=> startSession(), 150); });
+
+  // space to start
+  window.addEventListener('keydown', (e)=> { if(e.code === 'Space'){ e.preventDefault(); startSession(); } });
+
+  // render history
+  function renderHistory(){
+    historyEl.innerHTML = '';
+    if(history.length === 0){
+      historyEl.innerHTML = '<div style="color:#8f9fa8;text-align:center;padding:10px">No attempts yet — play one!</div>';
+      return;
+    }
+    history.forEach(h=>{
+      const el = document.createElement('div');
+      el.className = 'h-item';
+      const left = document.createElement('div');
+      left.style.flex = '1';
+      const d = new Date(h.date);
+      left.innerHTML = `<strong style="color:#c8f7fb">${h.score} pts • ${h.hits} hits</strong>
+                        <div style="font-size:12px;color:#9ca3af;margin-top:6px">${h.duration}s • Acc ${h.accuracy}% • ${d.toLocaleString()}</div>`;
+      const right = document.createElement('div');
+      right.innerHTML = `<button class="btn ghost" style="padding:6px 8px;border-radius:8px" onclick="navigator.clipboard?.writeText('Score:${h.score} Hits:${h.hits} Acc:${h.accuracy}% Date:${d.toLocaleString()}')">Copy</button>`;
+      el.appendChild(left); el.appendChild(right);
+      historyEl.appendChild(el);
+    });
+  }
+
+})();
+</script>
+</body>
+</html>
