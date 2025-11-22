@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Reaction Time Test — Measure Your Reaction Speed | ZentroTools</title>
+
+<!-- SEO -->
+<meta name="description" content="Reaction Time Test — measure your reaction speed with a tap. Mobile friendly, shows best time and history. Improve your reflexes with quick tests." />
+<meta name="keywords" content="reaction time test, reaction timer, reaction test, how fast am I, reflex test, online reaction test" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#020617" />
+<link rel="canonical" href="https://zentrotools.xyz/reaction-time.html" />
+
+<!-- Social preview -->
+<meta property="og:title" content="Reaction Time Test — ZentroTools" />
+<meta property="og:description" content="Wait for the tile to turn green, then tap as fast as you can. Measures reaction time in milliseconds and saves history." />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ZentroTools" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Reaction Time Test — ZentroTools" />
+<meta name="twitter:description" content="Wait for the tile to turn green, then tap as fast as you can. Measure and save your best reaction times." />
+
+<style>
+:root{
+  --bg1: radial-gradient(circle at 10% 10%, rgba(0,229,255,0.04), transparent), radial-gradient(circle at 90% 90%, rgba(43,214,255,0.02), transparent), #020617;
+  --card: rgba(15,23,42,0.96);
+  --accent: #38bdf8;
+  --neon: #00e5ff;
+  --panel-radius: 16px;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+html,body{height:100%;margin:0;background:var(--bg1);color:#e6f7fb;-webkit-font-smoothing:antialiased}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;box-sizing:border-box}
+.card{width:100%;max-width:520px;background:var(--card);border-radius:var(--panel-radius);padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
+.brand{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,var(--neon),#2bd6ff);display:flex;align-items:center;justify-content:center;font-weight:800;color:#001;font-family:monospace}
+h1{font-size:20px;margin:0;color:var(--neon)}
+p.lead{margin:6px 0 14px;color:#9fb0ba;font-size:13px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.stat{flex:1;min-width:110px;background:rgba(255,255,255,0.02);padding:10px;border-radius:10px;text-align:center}
+.stat .value{font-size:20px;font-weight:800;color:#00f0ff}
+.stat .label{font-size:12px;color:#9fb0ba;margin-top:6px}
+
+/* test area */
+.test-area{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.big-tile{
+  width:100%;border-radius:16px;padding:28px 18px;text-align:center;font-size:18px;font-weight:800;background:linear-gradient(180deg,#07121a,#0a1620);
+  border:1px solid rgba(255,255,255,0.03);cursor:pointer;user-select:none;touch-action:manipulation;
+}
+.big-tile.ready{background:linear-gradient(180deg,#112a1f,#0b2014);color:#c8f7fb}
+.big-tile.go{background:linear-gradient(180deg,#1b6a2c,#0e4a1f);color:#001}
+.big-tile.wait{background:linear-gradient(180deg,#2a2030,#241b2b);color:#9fb0ba}
+.controls{display:flex;gap:10px;margin-top:6px;width:100%}
+.btn{flex:1;padding:10px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+.btn.ghost{background:transparent;color:#9fb0ba;border:1px solid rgba(255,255,255,0.03)}
+.btn.danger{background:#ff6b6b;color:#001}
+.history{margin-top:12px;max-height:160px;overflow:auto;padding-right:6px}
+.h-item{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px;font-size:13px;color:#9fb0ba;display:flex;justify-content:space-between;align-items:center}
+.footer{margin-top:12px;display:flex;align-items:center;justify-content:space-between}
+.link{color:var(--accent);text-decoration:none;font-weight:700}
+
+/* modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:999;display:none}
+.modal{background:#07111a;border-radius:12px;padding:16px;max-width:420px;width:100%;border:1px solid rgba(255,255,255,0.04);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+.modal h3{margin:0;color:var(--neon);font-size:18px}
+.modal .row{display:flex;justify-content:space-between;margin-top:12px;color:#c8f7fb}
+.modal .note{color:#9fb0ba;font-size:13px;margin-top:8px}
+.modal .actions{display:flex;gap:10px;margin-top:14px}
+.modal .actions button{flex:1;padding:10px;border-radius:10px;border:0;cursor:pointer}
+.modal .ok{background:var(--accent);color:#001;font-weight:800}
+.modal .retry{background:#1f2937;color:#c8f7fb;border:1px solid rgba(255,255,255,0.03)}
+@media (max-width:520px){.card{padding:14px}.big-tile{padding:22px;font-size:16px}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="card" role="main">
+      <div class="brand">
+        <div class="logo">ZT</div>
+        <div>
+          <h1>Reaction Time Test</h1>
+          <p class="lead">Wait for the tile to turn green, then tap as fast as you can. Measures your reaction time in milliseconds.</p>
+        </div>
+      </div>
+
+      <div class="stats" aria-hidden="false">
+        <div class="stat"><div class="value" id="current">— ms</div><div class="label">Current</div></div>
+        <div class="stat"><div class="value" id="best">— ms</div><div class="label">Best</div></div>
+        <div class="stat"><div class="value" id="attempts">0</div><div class="label">Attempts</div></div>
+      </div>
+
+      <div class="test-area">
+        <div id="tile" class="big-tile">Start / Tap</div>
+        <div class="small-note" id="note">Mode: random delay • Use Space key or tap</div>
+
+        <div class="controls">
+          <button class="btn ghost" id="resetBtn">Reset</button>
+          <button class="btn ghost" id="clearHistBtn">Clear History</button>
+          <button class="btn danger" id="shareBtn">Share</button>
+        </div>
+      </div>
+
+      <div class="history" id="history" aria-live="polite"></div>
+
+      <div class="footer">
+        <a class="link" href="./index.html">← Back to Tools</a>
+        <div style="color:#9fb0ba;font-size:13px">Tip: Use a mouse for best result</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- modal -->
+  <div id="modal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>Result</h3>
+      <div class="row"><div>Reaction</div><div id="modalTime">0 ms</div></div>
+      <div class="row"><div>Attempts</div><div id="modalAttempts">0</div></div>
+      <div class="note" id="modalNote">Saved to history</div>
+      <div class="actions">
+        <button class="ok" id="modalOk">OK</button>
+        <button class="retry" id="modalRetry">Retry</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const tile = document.getElementById('tile');
+  const currentEl = document.getElementById('current');
+  const bestEl = document.getElementById('best');
+  const attemptsEl = document.getElementById('attempts');
+  const historyEl = document.getElementById('history');
+  const resetBtn = document.getElementById('resetBtn');
+  const clearHistBtn = document.getElementById('clearHistBtn');
+  const shareBtn = document.getElementById('shareBtn');
+
+  const modal = document.getElementById('modal');
+  const modalTime = document.getElementById('modalTime');
+  const modalAttempts = document.getElementById('modalAttempts');
+  const modalOk = document.getElementById('modalOk');
+  const modalRetry = document.getElementById('modalRetry');
+
+  let waiting = false;       // waiting for green
+  let ready = false;         // green now
+  let startAt = 0;
+  let timerId = null;
+  let clicks = 0;
+  let best = null;
+  let history = [];
+
+  // load best & history
+  try {
+    const sBest = localStorage.getItem('zt_react_best');
+    if(sBest) best = parseInt(sBest,10);
+    const h = JSON.parse(localStorage.getItem('zt_react_history') || '[]');
+    if(Array.isArray(h)) history = h;
+  } catch(e){ history = []; best = best || null; }
+
+  if(best !== null) bestEl.textContent = best + ' ms';
+  attemptsEl.textContent = history.length;
+
+  renderHistory();
+
+  // helpers
+  function randDelay(){ return 500 + Math.random()*3000; } // 0.5s - 3.5s
+  function startWaiting(){
+    resetState();
+    waiting = true;
+    tile.className = 'big-tile wait';
+    tile.textContent = 'Get ready...';
+    const delay = randDelay();
+    timerId = setTimeout(()=> {
+      showGo();
+    }, delay);
+  }
+  function showGo(){
+    waiting = false;
+    ready = true;
+    startAt = performance.now();
+    tile.className = 'big-tile go';
+    tile.textContent = 'TAP!';
+  }
+  function resetState(){
+    if(timerId) { clearTimeout(timerId); timerId = null; }
+    waiting = false; ready = false;
+    tile.className = 'big-tile';
+    tile.textContent = 'Start / Tap';
+  }
+
+  function onTap(){
+    // if modal open, ignore
+    if(modal.style.display === 'flex') return;
+
+    if(ready){
+      const ms = Math.round(performance.now() - startAt);
+      record(ms);
+    } else if(waiting){
+      // too early (false start)
+      if(timerId) { clearTimeout(timerId); timerId = null; }
+      tile.className = 'big-tile ready';
+      tile.textContent = 'Too soon! Wait for green';
+      setTimeout(()=> startWaiting(), 900);
+    } else {
+      // start new sequence
+      startWaiting();
+    }
+  }
+
+  function record(ms){
+    clicks++;
+    currentEl.textContent = ms + ' ms';
+    if(best === null || ms < best){ best = ms; localStorage.setItem('zt_react_best', best); bestEl.textContent = best + ' ms'; }
+    attemptsEl.textContent = history.length + 1;
+    const attempt = { time: ms, date: new Date().toISOString() };
+    history.unshift(attempt);
+    if(history.length > 50) history.pop();
+    localStorage.setItem('zt_react_history', JSON.stringify(history));
+    renderHistory();
+    showModal(ms);
+    resetState();
+  }
+
+  function renderHistory(){
+    historyEl.innerHTML = '';
+    if(history.length === 0){
+      historyEl.innerHTML = '<div style="color:#8f9fa8;text-align:center;padding:14px">No attempts yet — try one!</div>';
+      return;
+    }
+    history.forEach(h=>{
+      const el = document.createElement('div');
+      el.className = 'h-item';
+      const left = document.createElement('div');
+      left.innerHTML = `<strong style="color:#c8f7fb">${h.time} ms</strong><div style="font-size:12px;color:#9fb0ba">${(new Date(h.date)).toLocaleString()}</div>`;
+      historyEl.appendChild(el);
+      el.appendChild(left);
+    });
+  }
+
+  // modal
+  function showModal(ms){
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden','false');
+    modalTime.textContent = ms + ' ms';
+    modalAttempts.textContent = history.length;
+  }
+  function closeModal(){ modal.style.display = 'none'; modal.setAttribute('aria-hidden','true'); }
+
+  // events
+  tile.addEventListener('pointerdown', (e)=> { e.preventDefault(); onTap(); });
+  window.addEventListener('keydown', (e)=> { if(e.code === 'Space') { e.preventDefault(); onTap(); } });
+
+  resetBtn.addEventListener('click', ()=>{
+    if(confirm('Reset best time and clear attempts count (history will remain)?')){
+      best = null; localStorage.removeItem('zt_react_best'); bestEl.textContent = '— ms';
+    }
+  });
+
+  clearHistBtn.addEventListener('click', ()=>{
+    if(confirm('Clear all history?')){ history = []; localStorage.removeItem('zt_react_history'); renderHistory(); attemptsEl.textContent = '0'; }
+  });
+
+  shareBtn.addEventListener('click', ()=>{
+    const text = `My best reaction: ${best !== null ? best + ' ms' : '—'} on ZentroTools Reaction Test!`;
+    if(navigator.share){
+      navigator.share({title:'Reaction Test', text, url:location.href}).catch(()=>{ alert('Share failed'); });
+    } else {
+      navigator.clipboard?.writeText(text + ' ' + location.href).then(()=> alert('Copied share text'));
+    }
+  });
+
+  modalOk.addEventListener('click', ()=> closeModal());
+  modalRetry.addEventListener('click', ()=> { closeModal(); setTimeout(()=> startWaiting(),120); });
+
+})();
+</script>
+</body>
+</html>
