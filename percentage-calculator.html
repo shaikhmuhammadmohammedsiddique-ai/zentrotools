@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Percentage Calculator - Percent of Value, Percent Change & More | ZentroTools</title>
+
+<!-- SEO -->
+<meta name="description" content="ZentroTools Percentage Calculator — calculate percent of a value, find what percent A is of B, and compute percent increase or decrease. Fast, mobile-friendly and accurate." />
+<meta name="keywords" content="percentage calculator, percent calculator, percent of value, percent change, percent increase decrease, what percent is, percentage tool" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#020617" />
+
+<!-- Social preview -->
+<meta property="og:title" content="Percentage Calculator - ZentroTools" />
+<meta property="og:description" content="Calculate percent values fast — percent of value, what percent A is of B, and percent change. Mobile friendly." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Percentage Calculator - ZentroTools" />
+<meta name="twitter:description" content="Calculate percent values fast — percent of value, what percent A is of B, and percent change. Mobile friendly." />
+
+<style>
+  :root{
+    --bg: radial-gradient(circle at top, #0ea5e9 0, #020617 55%);
+    --card:#0f1720;
+    --accent:#38bdf8;
+    --neon:#00e5ff;
+    --glass: rgba(255,255,255,0.02);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  }
+  html,body{height:100%;margin:0;background:var(--bg);color:#e6f7fb;-webkit-font-smoothing:antialiased}
+  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+  .card{width:100%;max-width:420px;background:var(--card);border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 18px 45px rgba(0,0,0,0.6)}
+  .brand{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+  .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,var(--neon),#2bd6ff);display:flex;align-items:center;justify-content:center;font-weight:800;color:#001;font-family:monospace}
+  h1{font-size:18px;margin:0;color:var(--neon)}
+  p.lead{margin:6px 0 12px;color:#9fb0ba;font-size:13px}
+  .modes{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .mode-btn{background:transparent;border:1px solid rgba(255,255,255,0.03);color:#9fb0ba;padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:700}
+  .mode-btn.active{background:linear-gradient(180deg, rgba(0,229,255,0.06), rgba(0,229,255,0.02));color:#001;border-color:rgba(0,229,255,0.12)}
+  .form{margin-top:12px}
+  .row{display:flex;gap:10px;align-items:center;margin:8px 0}
+  label{min-width:110px;color:#9fb0ba;font-size:13px}
+  input[type="number"]{flex:1;padding:10px;border-radius:10px;border:none;background:#08101a;color:inherit;font-size:15px;outline:none}
+  .actions{display:flex;gap:10px;margin-top:12px}
+  .btn{flex:1;padding:12px;border-radius:10px;border:0;background:var(--accent);color:#022;font-weight:800;cursor:pointer}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:#9fb0ba;font-weight:700}
+  .result{margin-top:14px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(0,0,0,0.14), rgba(255,255,255,0.01));color:#c8f7fb;font-weight:800;font-size:16px}
+  .result-sub{font-size:13px;color:#9fb0ba;margin-top:6px;font-weight:600}
+  .history{margin-top:12px;max-height:120px;overflow:auto;padding-right:6px}
+  .h-item{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px;font-size:13px;color:#9fb0ba}
+  .back{display:block;text-align:center;margin-top:14px;color:var(--accent);text-decoration:none;font-weight:700}
+  @media (max-width:420px){.card{padding:14px}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="card" role="main">
+      <div class="brand">
+        <div class="logo">ZT</div>
+        <div>
+          <h1>Percentage Calculator</h1>
+          <p class="lead">Calculate percent values fast — three modes: percent of value, what percent A is of B, and percent change.</p>
+        </div>
+      </div>
+
+      <div class="modes" role="tablist" aria-label="modes">
+        <button class="mode-btn active" data-mode="of">Percent of Value</button>
+        <button class="mode-btn" data-mode="is">A is % of B</button>
+        <button class="mode-btn" data-mode="change">% Increase / Decrease</button>
+      </div>
+
+      <div class="form">
+        <!-- Percent of Value -->
+        <div class="mode" data-mode="of">
+          <div class="row"><label for="of_value">Value</label><input id="of_value" type="number" placeholder="e.g. 200"></div>
+          <div class="row"><label for="of_percent">Percent (%)</label><input id="of_percent" type="number" placeholder="e.g. 15"></div>
+        </div>
+
+        <!-- A is percent of B -->
+        <div class="mode" data-mode="is" style="display:none">
+          <div class="row"><label for="a">Part (A)</label><input id="a" type="number" placeholder="e.g. 30"></div>
+          <div class="row"><label for="b">Whole (B)</label><input id="b" type="number" placeholder="e.g. 200"></div>
+        </div>
+
+        <!-- Percent change -->
+        <div class="mode" data-mode="change" style="display:none">
+          <div class="row"><label for="old">Old Value</label><input id="old" type="number" placeholder="Original value (e.g. 120)"></div>
+          <div class="row"><label for="newv">New Value</label><input id="newv" type="number" placeholder="New value (e.g. 150)"></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="calcBtn">Calculate</button>
+          <button class="btn ghost" id="clearBtn">Clear</button>
+        </div>
+      </div>
+
+      <div class="result" id="result">—</div>
+      <div class="result-sub" id="resultSub">Enter numbers and press Calculate.</div>
+
+      <div class="history" id="history"></div>
+
+      <a class="back" href="./index.html">← Back to Tools</a>
+    </main>
+  </div>
+
+<script>
+(function(){
+  // elements
+  const modeBtns = document.querySelectorAll('.mode-btn');
+  const modePanels = document.querySelectorAll('.mode');
+  let currentMode = 'of';
+
+  function setMode(m){
+    currentMode = m;
+    modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+    modePanels.forEach(p => p.style.display = (p.dataset.mode === m ? '' : 'none'));
+    resultEl.textContent = '—';
+    resultSub.textContent = 'Enter numbers and press Calculate.';
+  }
+
+  modeBtns.forEach(b => b.addEventListener('click', ()=> setMode(b.dataset.mode)));
+
+  // result & history
+  const resultEl = document.getElementById('result');
+  const resultSub = document.getElementById('resultSub');
+  const historyEl = document.getElementById('history');
+
+  // inputs
+  const of_value = document.getElementById('of_value');
+  const of_percent = document.getElementById('of_percent');
+  const a = document.getElementById('a');
+  const b = document.getElementById('b');
+  const oldV = document.getElementById('old');
+  const newV = document.getElementById('newv');
+
+  // history from storage
+  let history = [];
+  try {
+    const h = JSON.parse(localStorage.getItem('zt_percent_history') || '[]');
+    if(Array.isArray(h)) history = h;
+  } catch(e){ history = []; }
+  renderHistory();
+
+  // calc
+  document.getElementById('calcBtn').addEventListener('click', () => {
+    if(currentMode === 'of') calcOf();
+    else if(currentMode === 'is') calcIs();
+    else calcChange();
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', ()=> {
+    document.querySelectorAll('input[type=number]').forEach(i => i.value = '');
+    resultEl.textContent = '—';
+    resultSub.textContent = 'Cleared';
+  });
+
+  function addHistory(text){
+    const item = { text: text, date: new Date().toISOString() };
+    history.unshift(item);
+    if(history.length > 40) history.pop();
+    localStorage.setItem('zt_percent_history', JSON.stringify(history));
+    renderHistory();
+  }
+
+  function renderHistory(){
+    historyEl.innerHTML = '';
+    if(history.length === 0){
+      historyEl.innerHTML = '<div style="color:#8f9fa8;text-align:center;padding:12px">No recent calculations</div>';
+      return;
+    }
+    history.forEach(h => {
+      const div = document.createElement('div');
+      div.className = 'h-item';
+      const d = new Date(h.date);
+      div.innerHTML = `<div style="font-weight:700;color:#c8f7fb">${h.text}</div><div style="font-size:12px;color:#9fb0ba;margin-top:6px">${d.toLocaleString()}</div>`;
+      historyEl.appendChild(div);
+    });
+  }
+
+  function calcOf(){
+    const v = parseFloat(of_value.value);
+    const p = parseFloat(of_percent.value);
+    if(isNaN(v) || isNaN(p)){ resultEl.textContent = 'Enter valid numbers'; resultSub.textContent = ''; return; }
+    const res = (v * p) / 100;
+    resultEl.textContent = res;
+    resultSub.textContent = `${p}% of ${v} = ${res}`;
+    addHistory(resultSub.textContent);
+  }
+
+  function calcIs(){
+    const va = parseFloat(a.value);
+    const vb = parseFloat(b.value);
+    if(isNaN(va) || isNaN(vb) || vb === 0){ resultEl.textContent = 'Enter valid numbers (B ≠ 0)'; resultSub.textContent = ''; return; }
+    const percent = (va / vb) * 100;
+    const formatted = +percent.toFixed(4);
+    resultEl.textContent = formatted + '%';
+    resultSub.textContent = `${va} is ${formatted}% of ${vb}`;
+    addHistory(resultSub.textContent);
+  }
+
+  function calcChange(){
+    const o = parseFloat(oldV.value);
+    const n = parseFloat(newV.value);
+    if(isNaN(o) || isNaN(n) || o === 0){ resultEl.textContent = 'Enter valid numbers (Old ≠ 0)'; resultSub.textContent = ''; return; }
+    const diff = n - o;
+    const percent = (diff / o) * 100;
+    const signed = +percent.toFixed(4);
+    const type = percent >= 0 ? 'increase' : 'decrease';
+    resultEl.textContent = (Math.abs(signed)).toString() + '%';
+    resultSub.textContent = `${n} is a ${Math.abs(signed)}% ${type} from ${o}`;
+    addHistory(resultSub.textContent);
+  }
+
+  // init
+  setMode('of');
+
+})();
+</script>
+</body>
+</html>
