@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Timer — Countdown & Alert | ZentroTools</title>
+
+<!-- SEO -->
+<meta name="description" content="Online Timer — set countdowns, presets and custom times. Get sound and vibration alerts when done. Mobile friendly and accurate." />
+<meta name="keywords" content="online timer, countdown timer, timer with sound, mobile timer, countdown, alarm timer" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#020617" />
+<link rel="canonical" href="https://zentrotools.xyz/timer.html" />
+
+<!-- Social preview -->
+<meta property="og:title" content="Timer — ZentroTools" />
+<meta property="og:description" content="Set countdowns and get sound/vibration alerts when done. Mobile friendly and accurate." />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ZentroTools" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Timer — ZentroTools" />
+<meta name="twitter:description" content="Set countdowns and get sound/vibration alerts when done. Mobile friendly and accurate." />
+
+<style>
+:root{
+  --bg1: linear-gradient(to bottom,#0ea5e9 0%, #020617 60%);
+  --card: rgba(15,23,42,0.96);
+  --accent: #38bdf8;
+  --muted: #9ca3af;
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+}
+
+html,body{
+  height:100%;margin:0;background:var(--bg1);color:#e6f7fb;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:20px;box-sizing:border-box;
+}
+
+.card{
+  width:100%;max-width:420px;background:var(--card);
+  padding:18px;border-radius:14px;
+  border:1px solid rgba(255,255,255,0.04);
+  box-shadow:0 18px 50px rgba(0,0,0,0.6);
+}
+
+.brand{
+  display:flex;gap:12px;align-items:center;margin-bottom:8px;
+}
+.logo{
+  width:44px;height:44px;border-radius:10px;
+  background:linear-gradient(90deg,#00e5ff,#2bd6ff);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#001;font-family:monospace;
+}
+
+h1{margin:0;font-size:20px;color:#00f0ff}
+.lead{margin:6px 0 12px;color:var(--muted);font-size:13px}
+
+.preset-grid{
+  display:flex;gap:10px;margin:10px 0;
+}
+.preset-btn{
+  flex:1;padding:10px;border-radius:10px;border:0;
+  background:#0b1623;color:#c8f7fb;font-weight:700;cursor:pointer;
+  border:1px solid rgba(255,255,255,0.05);
+}
+.preset-btn:hover{border-color:var(--accent)}
+
+.row{
+  display:flex;gap:10px;margin:10px 0;
+}
+label{
+  color:var(--muted);font-size:13px;min-width:70px;
+}
+input{
+  flex:1;padding:12px;border-radius:10px;border:0;outline:none;
+  background:#08101a;color:#fff;font-size:16px;
+}
+
+.timer-display{
+  margin:14px 0;padding:20px;
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(0,0,0,0.1));
+  text-align:center;font-size:42px;
+  font-weight:800;color:#c8f7fb;letter-spacing:2px;
+}
+
+.controls{
+  display:flex;gap:10px;margin-top:10px;
+}
+.btn{
+  flex:1;padding:12px;border-radius:10px;border:0;
+  font-weight:800;cursor:pointer;
+}
+.start{background:var(--accent);color:#001}
+.pause{background:#ffae00;color:#001}
+.reset{background:#ff6b6b;color:#001}
+
+.flash{
+  animation:flash 0.35s alternate 6;
+}
+@keyframes flash{
+  from{background:rgba(15,23,42,0.96)}
+  to{background:rgba(0,255,150,0.25)}
+}
+
+.back{
+  display:block;margin-top:14px;text-align:center;
+  color:var(--accent);text-decoration:none;font-weight:700;
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <main class="card" role="main" aria-label="Timer">
+
+    <div class="brand">
+      <div class="logo">ZT</div>
+      <div>
+        <h1>Timer</h1>
+        <div class="lead">Set countdowns with sound + vibration alert. Accurate & mobile friendly.</div>
+      </div>
+    </div>
+
+    <div class="preset-grid" role="list">
+      <button class="preset-btn" data-min="5">5 min</button>
+      <button class="preset-btn" data-min="10">10 min</button>
+      <button class="preset-btn" data-min="15">15 min</button>
+    </div>
+
+    <div class="row">
+      <label for="min">Minutes</label>
+      <input id="min" type="number" value="0" min="0" inputmode="numeric">
+    </div>
+
+    <div class="row">
+      <label for="sec">Seconds</label>
+      <input id="sec" type="number" value="30" min="0" max="59" inputmode="numeric">
+    </div>
+
+    <div id="display" class="timer-display" role="status" aria-live="polite">00:30</div>
+
+    <div class="controls" role="group" aria-label="Timer controls">
+      <button id="startBtn" class="btn start">Start</button>
+      <button id="pauseBtn" class="btn pause">Pause</button>
+      <button id="resetBtn" class="btn reset">Reset</button>
+    </div>
+
+    <a href="./index.html" class="back">← Back to Tools</a>
+
+  </main>
+</div>
+
+<!-- Sound -->
+<audio id="beep">
+  <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+</audio>
+
+<script>
+(function(){
+
+  const minEl = document.getElementById("min");
+  const secEl = document.getElementById("sec");
+  const display = document.getElementById("display");
+
+  const startBtn = document.getElementById("startBtn");
+  const pauseBtn = document.getElementById("pauseBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  const presets = document.querySelectorAll(".preset-btn");
+  const beep = document.getElementById("beep");
+  let timer = null;
+  let total = 30; // default 30 seconds
+  let running = false;
+
+  // Format time
+  function fmt(s){
+    return String(s).padStart(2,'0');
+  }
+
+  function updateDisplay(){
+    const m = Math.floor(total/60);
+    const s = total%60;
+    display.textContent = fmt(m)+":"+fmt(s);
+  }
+
+  // Presets
+  presets.forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const m = parseInt(btn.dataset.min, 10);
+      minEl.value = m;
+      secEl.value = 0;
+      total = m*60;
+      updateDisplay();
+    });
+  });
+
+  // Start
+  startBtn.addEventListener("click",()=>{
+    if(running) return;
+    const m = parseInt(minEl.value)||0;
+    const s = parseInt(secEl.value)||0;
+    total = m*60 + s;
+    if(total <= 0) return alert("Set a valid time.");
+
+    running = true;
+    timer = setInterval(()=>{
+      total--;
+      updateDisplay();
+
+      if(total <= 0){
+        clearInterval(timer);
+        running = false;
+
+        // Play sound
+        try { beep.play().catch(()=>{}); } catch(e){}
+
+        // Vibrate
+        if(navigator.vibrate) navigator.vibrate([200,200,200]);
+
+        // Flash effect
+        display.classList.add("flash");
+        setTimeout(()=> display.classList.remove("flash"), 2000);
+      }
+    },1000);
+  });
+
+  // Pause
+  pauseBtn.addEventListener("click",()=>{
+    if(!running) return;
+    running = false;
+    clearInterval(timer);
+  });
+
+  // Reset
+  resetBtn.addEventListener("click",()=>{
+    running = false;
+    clearInterval(timer);
+    const m = parseInt(minEl.value)||0;
+    const s = parseInt(secEl.value)||0;
+    total = m*60 + s;
+    updateDisplay();
+    display.classList.remove("flash");
+  });
+
+  updateDisplay();
+
+})();
+</script>
+
+</body>
+</html>
