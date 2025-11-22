@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit Converter - Length, Weight & Temperature | ZentroTools</title>
+
+<!-- SEO -->
+<meta name="description" content="ZentroTools Unit Converter — convert length, weight and temperature quickly and accurately. Mobile friendly and easy to use." />
+<meta name="keywords" content="unit converter, length converter, weight converter, temperature converter, cm to m, kg to lb, C to F" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#020617" />
+<link rel="canonical" href="https://zentrotools.xyz/unit-converter.html" />
+
+<!-- Social preview -->
+<meta property="og:title" content="Unit Converter - ZentroTools" />
+<meta property="og:description" content="Convert length, weight and temperature fast. Works on mobile and desktop." />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ZentroTools" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Unit Converter - ZentroTools" />
+<meta name="twitter:description" content="Convert length, weight and temperature fast. Works on mobile and desktop." />
+
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: radial-gradient(circle at top, #0ea5e9 0, #020617 55%);
+    color: #e5e7eb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .container {
+    background: rgba(15,23,42,0.96);
+    padding: 25px;
+    border-radius: 16px;
+    width: 330px;
+    box-shadow: 0 16px 35px rgba(0,0,0,0.8);
+    border: 1px solid rgba(30,64,175,0.7);
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 18px;
+    color: #38bdf8;
+  }
+
+  select, input {
+    width: 100%;
+    padding: 12px;
+    margin: 7px 0;
+    border-radius: 10px;
+    border: none;
+    background: #0f172a;
+    color: white;
+    font-size: 16px;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    border: none;
+    background: #38bdf8;
+    color: #0f172a;
+    font-weight: bold;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  #result {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 18px;
+    color: #38f3ff;
+    font-weight: 600;
+  }
+
+  a {
+    color: #38bdf8;
+    text-decoration: none;
+    text-align: center;
+    display: block;
+    margin-top: 16px;
+  }
+</style>
+
+</head>
+<body>
+
+<div class="container" role="main" aria-label="Unit Converter">
+  <h2>Unit Converter</h2>
+
+  <!-- Type -->
+  <label for="type" style="display:none">Conversion type</label>
+  <select id="type" onchange="updateSelects()">
+    <option value="length">Length</option>
+    <option value="weight">Weight</option>
+    <option value="temp">Temperature</option>
+  </select>
+
+  <!-- Value -->
+  <label for="value" style="display:none">Value</label>
+  <input type="number" id="value" placeholder="Enter value" inputmode="decimal" />
+
+  <!-- From -->
+  <label for="from" style="display:none">From unit</label>
+  <select id="from" aria-label="From unit"></select>
+
+  <!-- To -->
+  <label for="to" style="display:none">To unit</label>
+  <select id="to" aria-label="To unit"></select>
+
+  <button onclick="convert()" aria-label="Convert">Convert</button>
+
+  <div id="result" role="status" aria-live="polite"></div>
+
+  <a href="./index.html">← Back to Tools</a>
+</div>
+
+<script>
+const unitOptions = {
+  length: ["cm", "m", "km", "inch", "feet"],
+  weight: ["g", "kg", "lb"],
+  temp: ["C", "F", "K"]
+};
+
+function updateSelects() {
+  const type = document.getElementById("type").value;
+  const from = document.getElementById("from");
+  const to = document.getElementById("to");
+
+  from.innerHTML = "";
+  to.innerHTML = "";
+
+  unitOptions[type].forEach(u => {
+    const opt1 = document.createElement('option');
+    opt1.value = u; opt1.textContent = u;
+    const opt2 = opt1.cloneNode(true);
+    from.appendChild(opt1);
+    to.appendChild(opt2);
+  });
+
+  // set sensible defaults
+  if(type === 'length'){ from.value='m'; to.value='cm'; }
+  if(type === 'weight'){ from.value='kg'; to.value='lb'; }
+  if(type === 'temp'){ from.value='C'; to.value='F'; }
+}
+
+updateSelects();
+
+function convert() {
+  const type = document.getElementById("type").value;
+  const val = parseFloat(document.getElementById("value").value);
+  const from = document.getElementById("from").value;
+  const to = document.getElementById("to").value;
+
+  const resultEl = document.getElementById("result");
+
+  if (isNaN(val)) {
+    resultEl.innerHTML = "Enter a valid number";
+    return;
+  }
+
+  let res;
+
+  // LENGTH
+  if (type === "length") {
+    let cm;
+    if (from === "cm") cm = val;
+    if (from === "m") cm = val * 100;
+    if (from === "km") cm = val * 100000;
+    if (from === "inch") cm = val * 2.54;
+    if (from === "feet") cm = val * 30.48;
+
+    if (to === "cm") res = cm;
+    if (to === "m") res = cm / 100;
+    if (to === "km") res = cm / 100000;
+    if (to === "inch") res = cm / 2.54;
+    if (to === "feet") res = cm / 30.48;
+  }
+
+  // WEIGHT
+  if (type === "weight") {
+    let g;
+    if (from === "g") g = val;
+    if (from === "kg") g = val * 1000;
+    if (from === "lb") g = val * 453.592;
+
+    if (to === "g") res = g;
+    if (to === "kg") res = g / 1000;
+    if (to === "lb") res = g / 453.592;
+  }
+
+  // TEMPERATURE
+  if (type === "temp") {
+    if (from === "C") {
+      if (to === "C") res = val;
+      if (to === "F") res = val * 9/5 + 32;
+      if (to === "K") res = val + 273.15;
+    } 
+    else if (from === "F") {
+      if (to === "C") res = (val - 32) * 5/9;
+      if (to === "F") res = val;
+      if (to === "K") res = (val - 32) * 5/9 + 273.15;
+    } 
+    else if (from === "K") {
+      if (to === "C") res = val - 273.15;
+      if (to === "F") res = (val - 273.15) * 9/5 + 32;
+      if (to === "K") res = val;
+    }
+  }
+
+  // Format result cleanly
+  if (typeof res === 'number' && isFinite(res)) {
+    // small values: show up to 6 decimals, otherwise 4
+    const abs = Math.abs(res);
+    const digits = abs < 1 ? 6 : 4;
+    resultEl.innerHTML = `<b>${res.toFixed(digits)}</b>`;
+  } else {
+    resultEl.innerHTML = "Conversion not supported";
+  }
+}
+</script>
+
+</body>
+</html>
