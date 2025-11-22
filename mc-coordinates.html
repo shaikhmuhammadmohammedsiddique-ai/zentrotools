@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Minecraft Coordinates Converter · ZentroTools</title>
+
+<!-- SEO -->
+<meta name="description" content="Minecraft Coordinates Converter — convert Overworld ⇄ Nether coordinates using the 8× scale. Supports custom rounding, copy result and history." />
+<meta name="keywords" content="minecraft coordinates converter, overworld to nether, nether to overworld, minecraft coords, portal coordinates" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#020617" />
+<link rel="canonical" href="https://zentrotools.xyz/mc-coords-converter.html" />
+
+<!-- Social preview -->
+<meta property="og:title" content="Minecraft Coordinates Converter · ZentroTools" />
+<meta property="og:description" content="Convert Overworld ⇄ Nether coordinates (8× scale). Enter X, Y, Z and choose rounding. Copy results & save history." />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ZentroTools" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Minecraft Coordinates Converter · ZentroTools" />
+<meta name="twitter:description" content="Convert Overworld ⇄ Nether coordinates (8× scale). Enter X, Y, Z and choose rounding. Copy results & save history." />
+
+<style>
+:root{
+  --bg: linear-gradient(to bottom,#0ea5e9 0%, #020617 60%);
+  --card: rgba(15,23,42,0.96);
+  --accent: #38bdf8;
+  --muted: #9ca3af;
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+}
+html,body{height:100%;margin:0;background:var(--bg);color:#e6f7fb;-webkit-font-smoothing:antialiased}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+.card{width:100%;max-width:560px;background:var(--card);padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 18px 45px rgba(0,0,0,0.6)}
+.brand{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,#00e5ff,#2bd6ff);display:flex;align-items:center;justify-content:center;font-weight:800;color:#001;font-family:monospace}
+h1{margin:0;font-size:20px;color:#00f0ff}
+.lead{margin:6px 0 12px;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row{display:flex;gap:8px;align-items:center;margin:8px 0}
+label{min-width:90px;color:var(--muted);font-size:13px}
+input[type="number"], select, input[type="text"]{flex:1;padding:10px;border-radius:10px;border:none;background:#08101a;color:inherit;font-size:15px;outline:none}
+.controls{display:flex;gap:10px;margin-top:12px}
+.btn{flex:1;padding:12px;border-radius:10px;border:0;background:var(--accent);color:#022;font-weight:800;cursor:pointer}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);font-weight:700}
+.result{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(0,0,0,0.14), rgba(255,255,255,0.01));color:#c8f7fb;font-weight:800;font-size:16px}
+.small{font-size:13px;color:var(--muted);margin-top:8px}
+.history{margin-top:12px;max-height:160px;overflow:auto;padding-right:6px}
+.h-item{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.back{display:block;text-align:center;margin-top:12px;color:var(--accent);text-decoration:none;font-weight:700}
+
+.note{font-size:13px;color:#9fb0ba;margin-top:8px;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px}
+
+@media (max-width:560px){
+  .grid{grid-template-columns:1fr}
+  label{min-width:80px}
+}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="card" role="main" aria-label="Minecraft Coordinates Converter">
+      <div class="brand">
+        <div class="logo">ZT</div>
+        <div>
+          <h1>Minecraft Coordinates Converter</h1>
+          <div class="lead">Convert Overworld ⇄ Nether coordinates using the 8× scale. Enter X, Y, Z and choose direction & rounding.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <label for="direction" style="display:none">Direction</label>
+        <select id="direction" style="min-width:180px;padding:10px;border-radius:10px;border:none;background:#08101a;color:inherit" aria-label="Conversion direction">
+          <option value="ow-to-nether">Overworld → Nether (divide by 8)</option>
+          <option value="nether-to-ow">Nether → Overworld (multiply by 8)</option>
+        </select>
+
+        <label for="rounding" style="display:none">Rounding</label>
+        <select id="rounding" style="min-width:140px;padding:10px;border-radius:10px;border:none;background:#08101a;color:inherit" aria-label="Rounding mode">
+          <option value="round">Round</option>
+          <option value="floor">Floor</option>
+          <option value="ceil">Ceil</option>
+          <option value="2">2 decimals</option>
+          <option value="3">3 decimals</option>
+        </select>
+      </div>
+
+      <div class="grid" style="margin-top:12px">
+        <div>
+          <div class="row"><label for="x">X</label><input id="x" type="number" step="0.01" placeholder="e.g. 1000" inputmode="decimal" /></div>
+          <div class="row"><label for="y">Y</label><input id="y" type="number" step="0.01" placeholder="e.g. 64" inputmode="decimal" /></div>
+          <div class="row"><label for="z">Z</label><input id="z" type="number" step="0.01" placeholder="e.g. -300" inputmode="decimal" /></div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="row"><label for="label">Label</label><input id="label" type="text" placeholder="optional (e.g. home, base)" /></div>
+          <div style="margin-top:8px">
+            <div class="small">Quick helpers</div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button id="fromPlayer" class="btn btn-ghost" style="flex:1;background:transparent;border:1px solid rgba(255,255,255,0.04)">Use clipboard coords</button>
+              <button id="zeroBtn" class="btn btn-ghost" style="flex:1;background:transparent;border:1px solid rgba(255,255,255,0.04)">0,64,0</button>
+            </div>
+          </div>
+
+          <div class="note" aria-hidden="false">
+            Note: Standard conversion uses an 8× scale for X and Z. Y (height) is unchanged. For portal offsets or Bedrock differences, adjust manually.
+          </div>
+        </div>
+      </div>
+
+      <div class="controls" role="group" aria-label="actions">
+        <button id="convertBtn" class="btn">Convert</button>
+        <button id="copyBtn" class="btn ghost">Copy Result</button>
+        <button id="clearBtn" class="btn ghost">Clear</button>
+      </div>
+
+      <div id="resultBox" class="result" aria-live="polite">Result will appear here — press Convert.</div>
+
+      <div class="history" id="history" aria-live="polite"></div>
+
+      <a class="back" href="./index.html">← Back to Tools</a>
+    </main>
+  </div>
+
+<script>
+(function(){
+  // elements
+  const dirEl = document.getElementById('direction');
+  const roundEl = document.getElementById('rounding');
+  const xEl = document.getElementById('x');
+  const yEl = document.getElementById('y');
+  const zEl = document.getElementById('z');
+  const labelEl = document.getElementById('label');
+
+  const convertBtn = document.getElementById('convertBtn');
+  const copyBtn = document.getElementById('copyBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const fromPlayerBtn = document.getElementById('fromPlayer');
+  const zeroBtn = document.getElementById('zeroBtn');
+
+  const resultBox = document.getElementById('resultBox');
+  const historyEl = document.getElementById('history');
+
+  // storage
+  let history = [];
+  try { history = JSON.parse(localStorage.getItem('zt_mc_coords_history') || '[]'); } catch(e){ history = []; }
+  renderHistory();
+
+  // helpers
+  function toNumber(v){ return v === '' || v === null || v === undefined ? NaN : Number(v); }
+
+  function applyRounding(value){
+    const mode = roundEl.value;
+    if(mode === 'round') return Math.round(value);
+    if(mode === 'floor') return Math.floor(value);
+    if(mode === 'ceil') return Math.ceil(value);
+    const decimals = parseInt(mode,10);
+    if(!isNaN(decimals)){
+      const factor = Math.pow(10, decimals);
+      return Math.round(value * factor) / factor;
+    }
+    return value;
+  }
+
+  function convertCoords(){
+    const dir = dirEl.value;
+    const x = toNumber(xEl.value);
+    const y = toNumber(yEl.value);
+    const z = toNumber(zEl.value);
+
+    if(isNaN(x) || isNaN(y) || isNaN(z)){
+      resultBox.textContent = 'Please enter valid X, Y, Z numbers.';
+      return;
+    }
+
+    let nx = x, ny = y, nz = z;
+    if(dir === 'ow-to-nether'){
+      // Overworld -> Nether: divide X,Z by 8
+      nx = x / 8;
+      nz = z / 8;
+    } else {
+      // Nether -> Overworld: multiply X,Z by 8
+      nx = x * 8;
+      nz = z * 8;
+    }
+
+    // rounding
+    const rx = applyRounding(nx);
+    const ry = applyRounding(ny); // Y unchanged but apply rounding if user wants
+    const rz = applyRounding(nz);
+
+    // build text
+    const label = labelEl.value.trim();
+    const labelText = label ? ` (${label})` : '';
+    const dirText = dir === 'ow-to-nether' ? 'Overworld → Nether' : 'Nether → Overworld';
+
+    const text = `${dirText}${labelText}\nInput:  X=${x}, Y=${y}, Z=${z}\nOutput: X=${rx}, Y=${ry}, Z=${rz}`;
+    resultBox.textContent = text;
+
+    // store history
+    const attempt = { dir: dirText, input: {x,y,z}, output: {x:rx,y:ry,z:rz}, label: label, date: new Date().toISOString() };
+    history.unshift(attempt);
+    if(history.length > 60) history.pop();
+    localStorage.setItem('zt_mc_coords_history', JSON.stringify(history));
+    renderHistory();
+  }
+
+  function renderHistory(){
+    historyEl.innerHTML = '';
+    if(history.length === 0){
+      historyEl.innerHTML = '<div style="color:#8f9fa8;text-align:center;padding:12px">No recent conversions</div>';
+      return;
+    }
+    history.forEach(h=>{
+      const el = document.createElement('div');
+      el.className = 'h-item';
+      const left = document.createElement('div');
+      left.style.flex = '1';
+      left.innerHTML = `<strong style="color:#c8f7fb">${h.dir}${h.label ? ' • ' + h.label : ''}</strong>
+                        <div style="font-size:12px;color:#9ca3af;margin-top:6px;">In: X=${h.input.x}, Y=${h.input.y}, Z=${h.input.z}<br/>Out: X=${h.output.x}, Y=${h.output.y}, Z=${h.output.z}</div>`;
+      const right = document.createElement('div');
+      right.style.marginLeft = '10px';
+      const d = new Date(h.date);
+      right.innerHTML = `<div style="font-size:12px;color:#9ca3af">${d.toLocaleString()}</div>`;
+      el.appendChild(left); el.appendChild(right);
+      historyEl.appendChild(el);
+    });
+  }
+
+  // button events
+  convertBtn.addEventListener('click', convertCoords);
+
+  copyBtn.addEventListener('click', ()=>{
+    const t = resultBox.textContent;
+    if(!t || t.startsWith('Please')) return alert('Nothing to copy');
+    navigator.clipboard?.writeText(t).then(()=> alert('Copied to clipboard')).catch(()=> alert('Copy failed'));
+  });
+
+  clearBtn.addEventListener('click', ()=>{
+    if(confirm('Clear inputs and result?')){
+      xEl.value = ''; yEl.value = ''; zEl.value = ''; labelEl.value = '';
+      resultBox.textContent = 'Result will appear here — press Convert.';
+    }
+  });
+
+  zeroBtn.addEventListener('click', ()=>{
+    xEl.value = 0; yEl.value = 64; zEl.value = 0;
+  });
+
+  fromPlayerBtn.addEventListener('click', async ()=>{
+    // try to read clipboard text and parse coords like "X: 123 Y: 64 Z: -45" or "123 64 -45"
+    try {
+      const text = await navigator.clipboard.readText();
+      if(!text) return alert('Clipboard empty or not available');
+      // try to find numbers
+      const nums = text.match(/-?\d+(\.\d+)?/g);
+      if(nums && nums.length >= 3){
+        xEl.value = nums[0]; yEl.value = nums[1]; zEl.value = nums[2];
+        alert('Coordinates pasted from clipboard');
+      } else {
+        alert('No coordinates detected in clipboard');
+      }
+    } catch(e){ alert('Clipboard access failed'); }
+  });
+
+  // allow Enter to convert
+  [xEl,yEl,zEl,labelEl].forEach(el => el.addEventListener('keydown', (e) => { if(e.key === 'Enter') convertCoords(); }));
+
+  // init
+  function init(){
+    // default helpful values
+    xEl.value = 0; yEl.value = 64; zEl.value = 0;
+    renderHistory();
+  }
+
+  init();
+
+})();
+</script>
+</body>
+</html>
