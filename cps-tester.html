@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CPS Tester — Clicks Per Second Test | ZentroTools</title>
+
+<!-- Primary SEO -->
+<meta name="description" content="CPS Tester - measure your clicks per second. Tap or click the big button to get your CPS, highest score, average and history. Mobile friendly." />
+<meta name="keywords" content="cps tester, clicks per second, click test, reaction, gaming tools, cps test mobile" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#020617" />
+<link rel="canonical" href="https://zentrotools.xyz/cps-tester.html" />
+
+<!-- Social preview -->
+<meta property="og:title" content="CPS Tester — Clicks Per Second Test | ZentroTools" />
+<meta property="og:description" content="Tap or click the big button as fast as you can. Measures CPS, best & average. Mobile friendly." />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ZentroTools" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="CPS Tester — Clicks Per Second Test | ZentroTools" />
+<meta name="twitter:description" content="Tap or click the big button as fast as you can. Measures CPS, best & average. Mobile friendly." />
+
+<style>
+  :root{
+    --bg1: radial-gradient(circle at 10% 10%, rgba(0,229,255,0.04), transparent), radial-gradient(circle at 90% 90%, rgba(43,214,255,0.02), transparent), #020617;
+    --card: rgba(15,23,42,0.96);
+    --accent: #38bdf8;
+    --neon: #00e5ff;
+    --panel-radius: 16px;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  }
+  html,body{height:100%;margin:0;background:var(--bg1);color:#e6f7fb;-webkit-font-smoothing:antialiased}
+  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+  .card{width:100%;max-width:520px;background:var(--card);border-radius:var(--panel-radius);padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 20px 50px rgba(0,0,0,0.6)}
+  .brand{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+  .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,var(--neon),#2bd6ff);display:flex;align-items:center;justify-content:center;font-weight:800;color:#001;font-family:monospace}
+  h1{font-size:20px;margin:0;color:var(--neon)}
+  p.lead{margin:6px 0 14px;color:#9fb0ba;font-size:13px}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .stat{flex:1;min-width:110px;background:rgba(255,255,255,0.02);padding:10px;border-radius:10px;text-align:center}
+  .stat .value{font-size:20px;font-weight:800;color:#00f0ff}
+  .stat .label{font-size:12px;color:#9fb0ba;margin-top:6px}
+
+  /* big tap area */
+  .tap-area{
+    margin-top:14px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    align-items:center;
+  }
+  .big-btn{
+    width:100%;
+    border-radius:18px;
+    padding:30px 14px;
+    font-size:22px;
+    font-weight:900;
+    color:#022;
+    background:linear-gradient(180deg,var(--accent),#2bd6ff);
+    border:none;
+    cursor:pointer;
+    box-shadow:0 14px 36px rgba(56,189,248,0.12);
+    touch-action: manipulation;
+    user-select: none;
+  }
+  .big-btn[disabled]{
+    opacity:0.6;
+    cursor:not-allowed;
+  }
+  .big-btn .countdown { display:block; font-size:12px; color:#004; opacity:0.9; margin-top:6px; font-weight:700; }
+
+  .small-note{font-size:13px;color:#9fb0ba;text-align:center}
+
+  .controls{display:flex;gap:10px;margin-top:6px}
+  .btn{flex:1;padding:10px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+  .btn.ghost{background:transparent;color:#9fb0ba;border:1px solid rgba(255,255,255,0.03)}
+  .btn.danger{background:#ff6b6b;color:#001}
+
+  .history{margin-top:12px;max-height:140px;overflow:auto;padding-right:6px}
+  .h-item{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px;font-size:13px;color:#9fb0ba;display:flex;justify-content:space-between;align-items:center}
+
+  .footer{margin-top:12px;display:flex;align-items:center;justify-content:space-between}
+  .link{color:var(--accent);text-decoration:none;font-weight:700}
+
+  /* modal */
+  .modal-backdrop{
+    position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:999;
+  }
+  .modal{
+    background:#07111a;border-radius:12px;padding:18px;max-width:420px;width:100%;border:1px solid rgba(255,255,255,0.04);
+    box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  }
+  .modal h3{margin:0;color:var(--neon);font-size:18px}
+  .modal .row{display:flex;justify-content:space-between;margin-top:12px;color:#c8f7fb}
+  .modal .sub{color:#9fb0ba;font-size:13px;margin-top:8px}
+  .modal .actions{display:flex;gap:10px;margin-top:14px}
+  .modal .actions button{flex:1;padding:10px;border-radius:10px;border:0;cursor:pointer}
+  .modal .ok{background:var(--accent);color:#001;font-weight:800}
+  .modal .retry{background:#1f2937;color:#c8f7fb;border:1px solid rgba(255,255,255,0.03)}
+  .modal .close{background:transparent;border:1px solid rgba(255,255,255,0.04);color:#9fb0ba}
+
+  @media (max-width:520px){
+    .card{padding:14px}
+    .big-btn{padding:26px;font-size:20px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="card" role="main">
+      <div class="brand">
+        <div class="logo">ZT</div>
+        <div>
+          <h1>CPS Tester</h1>
+          <p class="lead">Tap or click the big button as fast as you can. Measures CPS, best & average. Mobile friendly.</p>
+        </div>
+      </div>
+
+      <div class="stats" aria-hidden="false">
+        <div class="stat">
+          <div class="value" id="cps">0.00</div>
+          <div class="label">Current CPS</div>
+        </div>
+        <div class="stat">
+          <div class="value" id="best">0.00</div>
+          <div class="label">Best CPS</div>
+        </div>
+        <div class="stat">
+          <div class="value" id="count">0</div>
+          <div class="label">Clicks</div>
+        </div>
+      </div>
+
+      <div class="tap-area">
+        <button class="big-btn" id="tapBtn">
+          Start / Tap
+          <span class="countdown" id="countdownText"></span>
+        </button>
+        <div class="small-note">Mode: <span id="modeLabel">5s test</span> • Use Space key or tap</div>
+
+        <div style="width:100%;display:flex;gap:10px" role="group" aria-label="controls">
+          <button class="btn ghost" id="modeBtn">Change Mode</button>
+          <button class="btn ghost" id="resetBtn">Reset</button>
+          <button class="btn danger" id="clearHistBtn">Clear History</button>
+        </div>
+      </div>
+
+      <div class="history" id="history" aria-live="polite" aria-label="History of attempts">
+      </div>
+
+      <div class="footer">
+        <a class="link" href="./index.html">← Back to Tools</a>
+        <div style="color:#9fb0ba;font-size:13px">Tip: Use a mouse or tap quickly</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal (hidden by default) -->
+  <div id="resultModal" class="modal-backdrop" style="display:none" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Test Complete</h3>
+      <div class="row"><div>Result (CPS)</div><div id="modalCPS">0.00</div></div>
+      <div class="row"><div>Clicks</div><div id="modalClicks">0</div></div>
+      <div class="row"><div>Duration (s)</div><div id="modalTime">0.00</div></div>
+      <div class="sub" id="modalNote">Saved to history. You can retry or close.</div>
+      <div class="actions">
+        <button class="ok" id="modalOk">OK</button>
+        <button class="retry" id="modalRetry">Retry</button>
+        <button class="close" id="modalClose">Close</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const modes = [3,5,10,30];
+  let modeIndex = 1; // default 5s
+  const modeLabel = document.getElementById('modeLabel');
+
+  const tapBtn = document.getElementById('tapBtn');
+  const cpsEl = document.getElementById('cps');
+  const bestEl = document.getElementById('best');
+  const countEl = document.getElementById('count');
+  const historyEl = document.getElementById('history');
+  const modeBtn = document.getElementById('modeBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const clearHistBtn = document.getElementById('clearHistBtn');
+  const countdownText = document.getElementById('countdownText');
+
+  // modal elements
+  const modal = document.getElementById('resultModal');
+  const modalCPS = document.getElementById('modalCPS');
+  const modalClicks = document.getElementById('modalClicks');
+  const modalTime = document.getElementById('modalTime');
+  const modalOk = document.getElementById('modalOk');
+  const modalRetry = document.getElementById('modalRetry');
+  const modalClose = document.getElementById('modalClose');
+
+  let clicks = 0;
+  let startTime = 0;
+  let timerId = null;
+  let running = false;
+  let best = 0;
+  let history = [];
+  let modalOpen = false;
+  let remainingInterval = null;
+
+  // load best & history
+  try {
+    const sBest = localStorage.getItem('zt_cps_best');
+    if(sBest) best = parseFloat(sBest) || 0;
+    const h = JSON.parse(localStorage.getItem('zt_cps_history') || '[]');
+    if(Array.isArray(h)) history = h;
+  } catch(e){ history = []; best = best || 0; }
+
+  bestEl.textContent = best.toFixed(2);
+  renderHistory();
+  updateModeLabel();
+
+  function updateModeLabel(){
+    modeLabel.textContent = modes[modeIndex] + 's test';
+  }
+
+  function startTest(){
+    // prevent starting if modal visible
+    if(modalOpen) return;
+    clicks = 0;
+    startTime = performance.now();
+    running = true;
+    const sec = modes[modeIndex];
+    cpsEl.textContent = '0.00';
+    countEl.textContent = '0';
+    tapBtn.textContent = 'Tap fast!';
+    tapBtn.disabled = false;
+    // show countdown and update every 100ms
+    let endAt = performance.now() + sec*1000;
+    updateCountdown(endAt);
+    timerId = setTimeout(()=> {
+      endTest();
+      stopCountdown();
+    }, sec*1000);
+  }
+
+  function updateCountdown(endAt){
+    if(remainingInterval) clearInterval(remainingInterval);
+    remainingInterval = setInterval(()=>{
+      const left = Math.max(0, endAt - performance.now());
+      const secLeft = Math.ceil(left/1000);
+      countdownText.textContent = secLeft + 's';
+    }, 100);
+  }
+  function stopCountdown(){
+    if(remainingInterval) { clearInterval(remainingInterval); remainingInterval = null; countdownText.textContent = ''; }
+  }
+
+  function endTest(){
+    running = false;
+    const elapsed = (performance.now() - startTime) / 1000;
+    const cps = clicks / Math.max(0.0001, elapsed);
+    cpsEl.textContent = cps.toFixed(2);
+    countEl.textContent = clicks;
+    tapBtn.textContent = 'Start / Tap';
+    // update best & storage
+    if(cps > best){
+      best = cps;
+      bestEl.textContent = best.toFixed(2);
+      localStorage.setItem('zt_cps_best', best.toFixed(2));
+    }
+    const attempt = { cps: +cps.toFixed(2), clicks: clicks, time: elapsed.toFixed(2), date: new Date().toISOString() };
+    history.unshift(attempt);
+    if(history.length > 50) history.pop();
+    localStorage.setItem('zt_cps_history', JSON.stringify(history));
+    renderHistory();
+
+    // show modal with details and block immediate restart
+    showModal(attempt);
+  }
+
+  function showModal(attempt){
+    modalOpen = true;
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    modalCPS.textContent = attempt.cps.toFixed(2);
+    modalClicks.textContent = attempt.clicks;
+    modalTime.textContent = attempt.time;
+    // disable button until user acknowledges
+    tapBtn.disabled = true;
+    countdownText.textContent = '';
+    // focus OK button for accessibility
+    modalOk.focus();
+  }
+  function closeModal(){
+    modalOpen = false;
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+    tapBtn.disabled = false; // allow start again
+  }
+
+  function renderHistory(){
+    historyEl.innerHTML = '';
+    if(history.length === 0){
+      historyEl.innerHTML = '<div style="color:#8f9fa8;text-align:center;padding:14px">No attempts yet — try your first test!</div>';
+      return;
+    }
+    history.forEach(h=>{
+      const el = document.createElement('div');
+      el.className = 'h-item';
+      const left = document.createElement('div');
+      left.innerHTML = `<strong style="color:#c8f7fb">${h.cps} CPS</strong><div style="font-size:12px;color:#9fb0ba">${h.clicks} clicks • ${h.time}s</div>`;
+      const right = document.createElement('div');
+      const d = new Date(h.date);
+      right.innerHTML = `<div style="font-size:12px;color:#9fb0ba">${d.toLocaleString()}</div>`;
+      el.appendChild(left);
+      el.appendChild(right);
+      historyEl.appendChild(el);
+    });
+  }
+
+  function onTap(){
+    if(modalOpen) return;            // block while modal is open
+    if(!running){
+      startTest();
+    }
+    clicks++;
+    countEl.textContent = clicks;
+    const elapsed = Math.max(0.001, (performance.now() - startTime) / 1000);
+    const cpsLive = clicks / elapsed;
+    cpsEl.textContent = cpsLive.toFixed(2);
+  }
+
+  // events
+  tapBtn.addEventListener('pointerdown', (e)=> { e.preventDefault(); onTap(); });
+
+  window.addEventListener('keydown', (e)=> { if(e.code === 'Space'){ e.preventDefault(); onTap(); } });
+
+  modeBtn.addEventListener('click', ()=>{
+    modeIndex = (modeIndex + 1) % modes.length;
+    updateModeLabel();
+    // if running, restart timer with new mode length
+    if(running && timerId){
+      clearTimeout(timerId);
+      stopCountdown();
+      const sec = modes[modeIndex];
+      let remaining = sec*1000; // restart from full time when mode changes
+      const endAt = performance.now() + remaining;
+      timerId = setTimeout(()=>{ endTest(); stopCountdown(); }, remaining);
+      updateCountdown(endAt);
+    }
+  });
+
+  resetBtn.addEventListener('click', ()=>{
+    if(timerId) { clearTimeout(timerId); timerId = null; }
+    running = false;
+    clicks = 0;
+    startTime = 0;
+    cpsEl.textContent = '0.00';
+    countEl.textContent = '0';
+    tapBtn.textContent = 'Start / Tap';
+    stopCountdown();
+    // ensure modal closed
+    closeModal();
+  });
+
+  clearHistBtn.addEventListener('click', ()=>{
+    if(confirm('Clear all history?')) {
+      history = [];
+      localStorage.removeItem('zt_cps_history');
+      renderHistory();
+    }
+  });
+
+  // modal buttons
+  modalOk.addEventListener('click', ()=> {
+    closeModal();
+  });
+  modalClose.addEventListener('click', ()=> {
+    closeModal();
+  });
+  modalRetry.addEventListener('click', ()=> {
+    closeModal();
+    // small delay to ensure UI resets before starting
+    setTimeout(()=> { startTest(); }, 120);
+  });
+
+  // accessibility safeguard: context menu disable
+  tapBtn.addEventListener('contextmenu', e=> e.preventDefault());
+
+  // expose for debug
+  window.zentroCPS = { startTest, endTest, getHistory: ()=>history };
+})();
+</script>
+</body>
+          </html>
