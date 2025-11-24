@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unit Converter - Length, Weight & Temperature | ZentroTools</title>
 
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RM8LRNVVZT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RM8LRNVVZT');
+</script>
+<!-- End Analytics -->
+
 <!-- SEO -->
 <meta name="description" content="ZentroTools Unit Converter — convert length, weight and temperature quickly and accurately. Mobile friendly and easy to use." />
 <meta name="keywords" content="unit converter, length converter, weight converter, temperature converter, cm to m, kg to lb, C to F" />
@@ -95,29 +105,20 @@
 <div class="container" role="main" aria-label="Unit Converter">
   <h2>Unit Converter</h2>
 
-  <!-- Type -->
-  <label for="type" style="display:none">Conversion type</label>
   <select id="type" onchange="updateSelects()">
     <option value="length">Length</option>
     <option value="weight">Weight</option>
     <option value="temp">Temperature</option>
   </select>
 
-  <!-- Value -->
-  <label for="value" style="display:none">Value</label>
   <input type="number" id="value" placeholder="Enter value" inputmode="decimal" />
 
-  <!-- From -->
-  <label for="from" style="display:none">From unit</label>
-  <select id="from" aria-label="From unit"></select>
+  <select id="from"></select>
+  <select id="to"></select>
 
-  <!-- To -->
-  <label for="to" style="display:none">To unit</label>
-  <select id="to" aria-label="To unit"></select>
+  <button onclick="convert()">Convert</button>
 
-  <button onclick="convert()" aria-label="Convert">Convert</button>
-
-  <div id="result" role="status" aria-live="polite"></div>
+  <div id="result"></div>
 
   <a href="./index.html">← Back to Tools</a>
 </div>
@@ -138,17 +139,18 @@ function updateSelects() {
   to.innerHTML = "";
 
   unitOptions[type].forEach(u => {
-    const opt1 = document.createElement('option');
-    opt1.value = u; opt1.textContent = u;
-    const opt2 = opt1.cloneNode(true);
-    from.appendChild(opt1);
+    const opt = document.createElement("option");
+    opt.value = u;
+    opt.textContent = u;
+    from.appendChild(opt);
+
+    const opt2 = opt.cloneNode(true);
     to.appendChild(opt2);
   });
 
-  // set sensible defaults
-  if(type === 'length'){ from.value='m'; to.value='cm'; }
-  if(type === 'weight'){ from.value='kg'; to.value='lb'; }
-  if(type === 'temp'){ from.value='C'; to.value='F'; }
+  if (type === "length") { from.value = "m"; to.value = "cm"; }
+  if (type === "weight") { from.value = "kg"; to.value = "lb"; }
+  if (type === "temp") { from.value = "C"; to.value = "F"; }
 }
 
 updateSelects();
@@ -196,30 +198,27 @@ function convert() {
     if (to === "lb") res = g / 453.592;
   }
 
-  // TEMPERATURE
+  // TEMP
   if (type === "temp") {
     if (from === "C") {
       if (to === "C") res = val;
       if (to === "F") res = val * 9/5 + 32;
       if (to === "K") res = val + 273.15;
-    } 
-    else if (from === "F") {
+    }
+    if (from === "F") {
       if (to === "C") res = (val - 32) * 5/9;
       if (to === "F") res = val;
       if (to === "K") res = (val - 32) * 5/9 + 273.15;
-    } 
-    else if (from === "K") {
+    }
+    if (from === "K") {
       if (to === "C") res = val - 273.15;
       if (to === "F") res = (val - 273.15) * 9/5 + 32;
       if (to === "K") res = val;
     }
   }
 
-  // Format result cleanly
-  if (typeof res === 'number' && isFinite(res)) {
-    // small values: show up to 6 decimals, otherwise 4
-    const abs = Math.abs(res);
-    const digits = abs < 1 ? 6 : 4;
+  if (typeof res === "number" && isFinite(res)) {
+    const digits = Math.abs(res) < 1 ? 6 : 4;
     resultEl.innerHTML = `<b>${res.toFixed(digits)}</b>`;
   } else {
     resultEl.innerHTML = "Conversion not supported";
