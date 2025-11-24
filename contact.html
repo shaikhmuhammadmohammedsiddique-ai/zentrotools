@@ -3,9 +3,20 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RM8LRNVVZT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RM8LRNVVZT');
+</script>
+
 <title>Contact · ZentroTools</title>
 <meta name="description" content="Contact ZentroTools — send feedback, report bugs or request new tools." />
 <link rel="canonical" href="https://zentrotools.xyz/contact.html" />
+
 <style>
   :root{
     --bg: radial-gradient(circle at top, #0ea5e9 0, #020617 55%);
@@ -30,6 +41,7 @@
   @media (max-width:520px){.contact-row{flex-direction:column;align-items:stretch}}
 </style>
 </head>
+
 <body>
   <div class="wrap">
     <main class="card" role="main" aria-labelledby="contactTitle">
@@ -48,7 +60,10 @@
       <p class="note">Tip: If you prefer, click <strong>Open mail app</strong> to compose directly. Emails will be received at <strong>zentrotools@gmail.com</strong>.</p>
 
       <div class="footer">
-        © ZentroTools — built by Muhammad. &nbsp; <a href="./privacy-policy.html" class="link">Privacy</a> · <a href="./terms.html" class="link">Terms</a> · <a href="./index.html" class="link">All tools</a>
+        © ZentroTools — built by Muhammad. &nbsp;
+        <a href="./privacy-policy.html" class="link">Privacy</a> ·
+        <a href="./terms.html" class="link">Terms</a> ·
+        <a href="./index.html" class="link">All tools</a>
       </div>
     </main>
   </div>
@@ -62,7 +77,6 @@
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(email);
       } else {
-        // fallback
         const ta = document.createElement('textarea');
         ta.value = email;
         document.body.appendChild(ta);
@@ -77,5 +91,6 @@
     }
   });
 </script>
+
 </body>
 </html>
