@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Coin Toss — Heads or Tails · ZentroTools</title>
+<meta name="description" content="Coin Toss — flip a coin with 3D animation, call heads or tails, see result, share, and keep history." />
+<meta name="theme-color" content="#021021" />
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RM8LRNVVZT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  // Replace with your GA4 Measurement ID
+  gtag('config', 'G-RM8LRNVVZT', { 'send_page_view': true });
+</script>
+
+<style>
+  :root{
+    --bg1:#021021; --bg2:#052233; --card:#07121a; --accent:#38bdf8; --accent2:#7df4c9;
+    --muted:#9fb0ba; --glass: rgba(255,255,255,0.03);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:#e6f7fb;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:18px auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:44px;height:44;border-radius:10px;background:linear-gradient(90deg,#00e5ff,#2bd6ff);display:flex;align-items:center;justify-content:center;font-weight:900;color:#001;font-family:monospace}
+  h1{margin:0;font-size:18px;color:var(--accent)}
+  p.lead{margin:0;color:var(--muted);font-size:13px}
+
+  main.card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:16px;border-radius:14px;border:1px solid var(--glass)}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .btn{padding:10px 12px;border-radius:999px;border:0;background:linear-gradient(180deg,var(--accent),#5fd6ff);color:#001;font-weight:800;cursor:pointer}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted);font-weight:700}
+  .btn.warn{background:#ffd86b;color:#001}
+
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .call{display:flex;gap:8px;align-items:center}
+  .call button{min-width:90px}
+
+  /* coin stage */
+  .stage{display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px}
+  .coin-holder{width:220px;height:220px;display:flex;align-items:center;justify-content:center;perspective:1400px}
+  .coin{
+    width:180px;height:180px;border-radius:50%;background:radial-gradient(circle at 30% 25%, #ffd36b, #f7b733);box-shadow:0 18px 40px rgba(0,0,0,0.6);
+    display:flex;align-items:center;justify-content:center;font-weight:900;font-size:36px;color:#111;transform-style:preserve-3d;cursor:pointer;
+    transition:transform 1s cubic-bezier(.2,.9,.3,1);
+    border:6px solid rgba(0,0,0,0.08);
+  }
+  .coin .face{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;border-radius:50%}
+  .coin .heads{transform:rotateY(0deg)}
+  .coin .tails{transform:rotateY(180deg)}
+  /* small rim text */
+  .rim{position:absolute;inset:0;border-radius:50%;pointer-events:none;border:6px solid rgba(255,255,255,0.03);box-shadow:inset 0 6px 18px rgba(0,0,0,0.15)}
+
+  .result-badge{padding:10px 14px;border-radius:999px;background:rgba(0,0,0,0.35);color:var(--muted);font-weight:800}
+
+  .meta{display:flex;gap:8px;justify-content:center;color:var(--muted);font-size:13px;margin-top:6px}
+
+  .history{margin-top:12px;max-height:220px;overflow:auto;padding-right:6px;display:flex;flex-direction:column;gap:8px}
+  .h-item{padding:8px;border-radius:10px;background:rgba(255,255,255,0.02);font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+
+  /* confetti canvas */
+  canvas#confetti{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:999}
+
+  /* small animation for correct guess */
+  .glow{box-shadow:0 0 40px rgba(125,244,201,0.25), 0 12px 30px rgba(0,0,0,0.6);transition:box-shadow .4s ease}
+
+  @media (max-width:520px){
+    .coin-holder{width:180px;height:180px}
+    .coin{width:150px;height:150px;font-size:28px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">ZT</div>
+        <div>
+          <h1>Coin Toss</h1>
+          <p class="lead">Call heads or tails, then flip the coin — animated & fun.</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="copyBtn" class="btn ghost">Copy Result</button>
+        <button id="shareBtn" class="btn ghost">Share</button>
+      </div>
+    </header>
+
+    <main class="card" role="main" aria-label="Coin toss tool">
+      <div class="controls">
+        <div class="row call" role="group" aria-label="Make your call">
+          <button id="callNone" class="btn ghost" aria-pressed="true">No Call</button>
+          <button id="callHeads" class="btn ghost">Call Heads</button>
+          <button id="callTails" class="btn ghost">Call Tails</button>
+        </div>
+
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button id="flipBtn" class="btn">Flip Coin</button>
+          <button id="randBtn" class="btn warn">Quick Flip</button>
+        </div>
+      </div>
+
+      <div class="stage" style="position:relative">
+        <div class="coin-holder" aria-hidden="false">
+          <div id="coin" class="coin" role="img" aria-label="Coin. Click or press flip.">
+            <div class="face heads" id="headsFace">HEADS</div>
+            <div class="face tails" id="tailsFace">TAILS</div>
+            <div class="rim"></div>
+          </div>
+        </div>
+
+        <div id="result" class="result-badge" aria-live="polite">Ready</div>
+        <div class="meta" id="metaLine">Guessed: <strong id="guessText" style="color:var(--accent);margin-left:6px">—</strong></div>
+
+        <canvas id="confetti" width="400" height="200" style="display:none"></canvas>
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+        <button id="clearHistory" class="btn ghost">Clear History</button>
+        <button id="soundToggle" class="btn ghost">Sound: On</button>
+      </div>
+
+      <div class="history" id="historyList" aria-live="polite">
+        <div class="h-item empty">No flips yet — try one!</div>
+      </div>
+    </main>
+  </div>
+
+<script>
+/* Coin Toss App
+ - Call: heads / tails / none
+ - Flip: animated 3D rotation with randomized full spins
+ - Result recorded to localStorage history
+ - Confetti + sound on correct guess
+ - Share & copy support
+ - GA4 tracking: sends 'coin_toss' event on each flip with result & guess
+*/
+
+// elements
+const coin = document.getElementById('coin');
+const flipBtn = document.getElementById('flipBtn');
+const randBtn = document.getElementById('randBtn');
+const callHeads = document.getElementById('callHeads');
+const callTails = document.getElementById('callTails');
+const callNone = document.getElementById('callNone');
+const resultEl = document.getElementById('result');
+const guessText = document.getElementById('guessText');
+const historyList = document.getElementById('historyList');
+const clearHistory = document.getElementById('clearHistory');
+const copyBtn = document.getElementById('copyBtn');
+const shareBtn = document.getElementById('shareBtn');
+const soundToggle = document.getElementById('soundToggle');
+const confettiCanvas = document.getElementById('confetti');
+
+let currentCall = null; // 'heads' | 'tails' | null
+let soundOn = true;
+let history = JSON.parse(localStorage.getItem('zt_coin_history') || '[]');
+
+// audio using WebAudio simple beep
+const audioCtx = typeof AudioContext !== 'undefined' ? new AudioContext() : null;
+function playTone(freq=440, duration=120, type='sine'){
+  if(!audioCtx || !soundOn) return;
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = type;
+  o.frequency.value = freq;
+  o.connect(g); g.connect(audioCtx.destination);
+  g.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.12, audioCtx.currentTime + 0.01);
+  o.start();
+  setTimeout(()=> {
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.02);
+    setTimeout(()=> { o.stop(); o.disconnect(); g.disconnect(); }, 30);
+  }, duration);
+}
+
+// UI helpers
+function setCall(c){
+  currentCall = c;
+  callHeads.classList.toggle('active', c==='heads');
+  callTails.classList.toggle('active', c==='tails');
+  callNone.classList.toggle('active', c===null);
+  // visually set pressed style
+  [callHeads, callTails, callNone].forEach(btn => btn.classList.toggle('ghost', !btn.classList.contains('active')));
+  guessText.textContent = c ? (c==='heads' ? 'Heads' : 'Tails') : '—';
+}
+setCall(null);
+
+// history render
+function renderHistory(){
+  historyList.innerHTML = '';
+  if(history.length === 0){
+    historyList.innerHTML = '<div class="h-item empty">No flips yet — try one!</div>';
+    return;
+  }
+  history.forEach(h=>{
+    const el = document.createElement('div');
+    el.className = 'h-item';
+    const left = document.createElement('div');
+    left.innerHTML = `<strong style="color:#c8f7fb">${h.result.toUpperCase()}</strong>
+                      <div style="font-size:12px;color:var(--muted)">${h.guess?('Guessed: '+h.guess.toUpperCase()+' • '):''}${new Date(h.time).toLocaleString()}</div>`;
+    const right = document.createElement('div');
+    right.innerHTML = `<button class="btn ghost" style="padding:6px 8px" onclick="navigator.clipboard?.writeText('${h.result.toUpperCase()}')">Copy</button>`;
+    el.appendChild(left); el.appendChild(right);
+    historyList.appendChild(el);
+  });
+}
+renderHistory();
+
+// click handlers for call buttons
+callHeads.addEventListener('click', ()=> setCall('heads'));
+callTails.addEventListener('click', ()=> setCall('tails'));
+callNone.addEventListener('click', ()=> setCall(null));
+
+clearHistory.addEventListener('click', ()=>{
+  if(!confirm('Clear flip history?')) return;
+  history = [];
+  localStorage.removeItem('zt_coin_history');
+  renderHistory();
+});
+
+// flipping logic
+let animating = false;
+function flipCoin(quick=false){
+  if(animating) return;
+  animating = true;
+  // randomize spins and angle
+  const spins = quick ? 6 : (8 + Math.floor(Math.random()*8)); // full rotations
+  const extra = Math.random() * 360;
+  // total degrees rotate Y
+  const deg = spins * 360 + extra;
+  // choose result randomly (fair coin)
+  const result = Math.random() < 0.5 ? 'heads' : 'tails';
+
+  // animate CSS transform: rotateY by deg + tilt
+  coin.style.transition = 'transform 1.2s cubic-bezier(.2,.9,.3,1)';
+  const tilt = (Math.random()-0.5)*20;
+  coin.style.transform = `rotateY(${deg}deg) rotateX(${tilt}deg)`;
+
+  // sound start
+  playTone(800, 50, 'square');
+
+  // after animation ends reveal properly
+  setTimeout(()=> {
+    // settle to final face (0 for heads, 180 for tails)
+    const finalRot = result === 'heads' ? 0 : 180;
+    coin.style.transition = 'transform 320ms ease-out';
+    coin.style.transform = `rotateY(${finalRot}deg) rotateX(0deg)`;
+    revealResult(result);
+    animating = false;
+  }, 1200);
+}
+
+// reveal result: update UI, history, confetti/sound if guessed right, send GA event
+function revealResult(result){
+  resultEl.textContent = result.toUpperCase();
+  const time = Date.now();
+  const record = { result, guess: currentCall, time };
+  history.unshift(record);
+  if(history.length > 80) history.pop();
+  localStorage.setItem('zt_coin_history', JSON.stringify(history));
+  renderHistory();
+
+  // check guess
+  const correct = currentCall && ((currentCall==='heads' && result==='heads') || (currentCall==='tails' && result==='tails'));
+  if(correct){
+    // glow coin briefly and confetti + sound
+    coin.classList.add('glow');
+    setTimeout(()=> coin.classList.remove('glow'), 900);
+    triggerConfetti(60);
+    playTone(880, 200, 'sine');
+  } else {
+    playTone(180, 180, 'sine');
+  }
+
+  // GA4 tracking: send coin_toss event with result + guess info
+  try {
+    if(typeof gtag === 'function'){
+      gtag('event', 'coin_toss', {
+        'tool': 'coin_toss',
+        'result': result,             // "heads" or "tails"
+        'guess': currentCall || 'none',
+        'guessed_correct': Boolean(correct),
+        'event_time': new Date(time).toISOString()
+      });
+    }
+  } catch(e){ /* ignore analytics errors */ }
+}
+
+// quick flip handler
+randBtn.addEventListener('click', ()=> {
+  // quick: randomize call automatically sometimes
+  if(Math.random() < 0.25) setCall(Math.random()<0.5? 'heads':'tails');
+  flipCoin(true);
+});
+
+// flip button
+flipBtn.addEventListener('click', ()=> flipCoin(false));
+coin.addEventListener('click', ()=> flipCoin(false));
+
+// copy/share handlers
+copyBtn.addEventListener('click', ()=>{
+  const latest = history[0];
+  if(!latest) return alert('No result to copy yet.');
+  const txt = `Coin: ${latest.result.toUpperCase()}${latest.guess?(' (Guessed: '+latest.guess.toUpperCase()+')'):''} — ${new Date(latest.time).toLocaleString()}`;
+  navigator.clipboard?.writeText(txt).then(()=> alert('Copied')).catch(()=> alert('Copy failed'));
+});
+
+shareBtn.addEventListener('click', ()=>{
+  const latest = history[0];
+  const text = latest ? `Coin: ${latest.result.toUpperCase()}${latest.guess?(' (Guessed: '+latest.guess.toUpperCase()+')'):''}` : 'Coin Toss — try it!';
+  if(navigator.share){
+    navigator.share({title:'Coin Toss', text, url:location.href}).catch(()=> {});
+  } else {
+    navigator.clipboard?.writeText(text + ' ' + location.href).then(()=> alert('Share text copied')).catch(()=> alert('Share failed'));
+  }
+});
+
+// sound toggle
+soundToggle.addEventListener('click', ()=>{
+  soundOn = !soundOn;
+  soundToggle.textContent = 'Sound: ' + (soundOn? 'On' : 'Off');
+});
+
+// confetti implementation (lightweight, canvas)
+function triggerConfetti(pieces=40){
+  try {
+    const cvs = confettiCanvas;
+    const rect = cvs.getBoundingClientRect();
+    cvs.width = rect.width;
+    cvs.height = rect.height;
+    cvs.style.display = 'block';
+    const ctx = cvs.getContext('2d');
+    const W = cvs.width, H = cvs.height;
+    const colors = ['#fff176','#ff8a65','#81c784','#64b5f6','#ffb74d','#7df4c9','#38bdf8'];
+    const parts = [];
+    for(let i=0;i<pieces;i++){
+      parts.push({
+        x: W/2 + (Math.random()-0.5)*120,
+        y: H/2 + (Math.random()-0.5)*80,
+        vx: (Math.random()-0.5)*6,
+        vy: - (Math.random()*6 + 2),
+        r: Math.random()*8 + 4,
+        color: colors[Math.floor(Math.random()*colors.length)],
+        rot: Math.random()*360,
+        vr: (Math.random()-0.5)*8
+      });
+    }
+    let t=0;
+    function frame(){
+      t++;
+      ctx.clearRect(0,0,W,H);
+      for(const p of parts){
+        p.vy += 0.18; // gravity
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rot*Math.PI/180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6);
+        ctx.restore();
+      }
+      if(t < 100) requestAnimationFrame(frame);
+      else { ctx.clearRect(0,0,W,H); cvs.style.display='none'; }
+    }
+    frame();
+  } catch(e){ /* ignore */ }
+}
+
+// init: load saved history and set ARIA labels
+(function init(){
+  renderHistory();
+  resultEl.textContent = 'Ready';
+  guessText.textContent = '—';
+  // optional: send a lightweight event that user opened the tool
+  try {
+    if(typeof gtag === 'function'){
+      gtag('event', 'view_tool', { 'tool': 'coin_toss' });
+    }
+  } catch(e){}
+})();
+
+</script>
+</body>
+</html>
+```0
