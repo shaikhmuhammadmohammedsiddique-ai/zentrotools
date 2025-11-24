@@ -18,19 +18,16 @@
   <meta name="keywords" content="online tools, age calculator, percentage calculator, cps tester, reaction time test, aim trainer, minecraft tools, bmi calculator, unit converter, random number generator, timer" />
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#021021" />
-
-  <!-- canonical (your GitHub Pages folder) -->
   <link rel="canonical" href="https://shaikhmuhammadmohammedsiddique-ai.github.io/zentrotools/">
 
-  <!-- Improved background + polished card styles (drop-in) -->
   <style>
     :root{
-      --bg-a: #07192a;    /* deep base */
-      --bg-b: #022033;    /* second layer */
+      --bg-a: #07192a;
+      --bg-b: #022033;
       --accent: #38bdf8;
       --muted: #9fb0ba;
-      --card-bg: rgba(6,12,20,0.64);
       --glass: rgba(255,255,255,0.03);
+      --card-border: rgba(255,255,255,0.04);
       --radius: 14px;
       --max-width: 980px;
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
@@ -40,26 +37,26 @@
     html,body{height:100%;margin:0;-webkit-font-smoothing:antialiased}
     a{text-decoration:none;color:inherit}
 
-    /* Smooth, fixed background with layered subtle radial lights */
     body{
-      background-color: var(--bg-a);
+      margin:0;
+      min-height:100vh;
+      color:#e6f7fb;
+      background-color:var(--bg-a);
       background-image:
         radial-gradient(800px 300px at 6% 6%, rgba(14,165,233,0.09) 0%, rgba(14,165,233,0.03) 10%, transparent 40%),
         radial-gradient(700px 260px at 92% 92%, rgba(43,214,255,0.06) 0%, rgba(43,214,255,0.02) 12%, transparent 46%),
         linear-gradient(180deg, rgba(2,48,65,0.85), rgba(1,12,24,0.9));
       background-attachment: fixed;
-      background-size: cover;
-      padding:28px 18px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-y:auto;
+      -webkit-overflow-scrolling: touch;
+      padding:24px 16px;
       display:flex;
       justify-content:center;
-      align-items:flex-start;         /* keep content top so page scrolls naturally */
-      color:#e6f7fb;
-      min-height:100vh;
-      overflow-y:auto;                /* allow vertical scrolling */
-      -webkit-overflow-scrolling: touch;
+      align-items:flex-start;
     }
 
-    /* outer container centers content and gives subtle vignette so edges blend */
     .wrap{
       width:100%;
       max-width:var(--max-width);
@@ -71,7 +68,6 @@
       padding-bottom:28px;
     }
 
-    /* subtle vignette overlay to hide tiny gradient edges */
     .wrap::before{
       content:"";
       position:fixed;
@@ -83,16 +79,19 @@
     }
 
     header{
-      padding:18px;
+      padding:16px;
       border-radius:var(--radius);
       display:flex;
       justify-content:space-between;
+      align-items:center;
+      gap:12px;
       background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
       border:1px solid var(--glass);
       backdrop-filter: blur(6px) saturate(110%);
-      box-shadow: 0 8px 30px rgba(2,8,14,0.5);
-      position:relative;
-      z-index:2;
+      box-shadow: 0 8px 30px rgba(2,8,14,0.45);
+      position:sticky;
+      top:12px;
+      z-index:5;
     }
 
     .brand{display:flex;gap:12px;align-items:center}
@@ -100,15 +99,22 @@
     .site-title{font-size:20px;font-weight:800;color:#dff8ff}
     .subtitle{font-size:13px;color:var(--muted)}
 
+    /* right header actions */
+    .header-actions{display:flex;gap:10px;align-items:center}
+
+    .header-actions a.small-link{
+      background:transparent;border:1px solid rgba(255,255,255,0.04);padding:6px 10px;border-radius:999px;color:var(--muted);font-weight:700;font-size:13px
+    }
+
     main{
       background: linear-gradient(180deg, rgba(5,8,14,0.76), rgba(5,8,14,0.84));
       padding:18px;
       border-radius:18px;
-      border:1px solid rgba(255,255,255,0.04);
+      border:1px solid var(--card-border);
       box-shadow: 0 30px 80px rgba(2,8,14,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
       position:relative;
-      overflow:hidden;
       z-index:2;
+      overflow:visible;
     }
 
     h2{margin:0;color:var(--accent);font-size:18px}
@@ -119,19 +125,22 @@
       grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
       gap:14px;
       margin-top:12px;
-      position:relative;
-      z-index:3;
     }
 
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
       padding:14px;
       border-radius:12px;
-      border:1px solid rgba(255,255,255,0.04);
+      border:1px solid var(--card-border);
       transition: transform .18s ease, box-shadow .18s ease;
       box-shadow: 0 8px 20px rgba(2,8,14,0.45);
       backdrop-filter: blur(4px) saturate(110%);
+      min-height:110px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
     }
+
     .card:hover{
       transform: translateY(-6px) scale(1.01);
       box-shadow: 0 18px 40px rgba(2,8,14,0.6);
@@ -141,22 +150,30 @@
     .tag{font-size:11px;color:var(--accent);font-weight:700}
     .card h3{margin:6px 0 6px 0;font-size:16px;color:#eaffff}
     .card p{margin:0;font-size:13px;color:var(--muted)}
-    .row{display:flex;justify-content:space-between;margin-top:10px}
+    .row{display:flex;justify-content:space-between;margin-top:10px;align-items:center}
     .btn{background:var(--accent);color:#001;padding:8px 12px;border-radius:999px;font-weight:800;font-size:13px;box-shadow: 0 6px 18px rgba(56,189,248,0.06)}
     .pill{border:1px solid rgba(255,255,255,0.05);padding:6px 10px;border-radius:999px;color:var(--muted);font-weight:700;font-size:13px}
 
-    /* small screens: reduce gradient intensity to avoid banding */
+    footer{
+      margin-top:12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      color:var(--muted);
+      font-size:13px;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    footer a{color:var(--muted);font-weight:700;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,0.02);background:transparent}
+
     @media (max-width:520px){
-      body{
-        background-image:
-          radial-gradient(600px 220px at 8% 6%, rgba(14,165,233,0.08) 0%, transparent 18%),
-          radial-gradient(520px 180px at 92% 92%, rgba(43,214,255,0.05) 0%, transparent 22%),
-          linear-gradient(180deg, rgba(2,48,65,0.88), rgba(1,12,24,0.95));
-        padding:18px 10px;
-      }
+      body{padding:18px 10px;}
       .logo{width:46px;height:46px}
       .site-title{font-size:18px}
       .card{padding:12px}
+      .wrap{gap:12px}
+      header{padding:12px}
     }
   </style>
 </head>
@@ -165,134 +182,152 @@
   <div class="wrap">
     <header>
       <div class="brand">
-        <div class="logo">ZT</div>
+        <div class="logo" aria-hidden="true">ZT</div>
         <div>
           <div class="site-title">ZentroTools</div>
           <div class="subtitle">Fast, mobile-first utilities</div>
         </div>
       </div>
+
+      <!-- header actions: removed GitHub label per request; added small links -->
+      <div class="header-actions" role="navigation" aria-label="Header links">
+        <a class="small-link" href="privacy.html">Privacy</a>
+        <a class="small-link" href="terms.html">Terms</a>
+      </div>
     </header>
 
-    <main>
-      <h2 style="color:var(--accent);margin:0 0 10px 0;font-size:18px">Smart mini tools</h2>
-      <p style="color:var(--muted);font-size:13px">Fast calculators, converters & gaming tools.</p>
+    <main role="main" aria-label="Tools list">
+      <h2>Smart mini tools</h2>
+      <p class="lead">Fast calculators, converters & gaming tools.</p>
 
       <div class="tools">
-        <!-- 1 Age Calculator -->
+        <!-- tools (same list as before) -->
         <article class="card">
-          <div class="tag">Calculator</div>
-          <h3>Age Calculator</h3>
-          <p>Exact age in years, months & days.</p>
+          <div>
+            <div class="tag">Calculator</div>
+            <h3>Age Calculator</h3>
+            <p>Exact age in years, months & days.</p>
+          </div>
           <div class="row">
             <div class="pill">Utility</div>
             <a class="btn track-link" href="age-calculator.html" data-tool="age-calculator">Open →</a>
           </div>
         </article>
 
-        <!-- 2 Percentage Calculator -->
         <article class="card">
-          <div class="tag">Calculator</div>
-          <h3>Percentage Calculator</h3>
-          <p>Find % of any number fast.</p>
+          <div>
+            <div class="tag">Calculator</div>
+            <h3>Percentage Calculator</h3>
+            <p>Find % of any number fast.</p>
+          </div>
           <div class="row">
             <div class="pill">Utility</div>
             <a class="btn track-link" href="percentage-calculator.html" data-tool="percentage-calculator">Open →</a>
           </div>
         </article>
 
-        <!-- 3 CPS Tester -->
         <article class="card">
-          <div class="tag">Gaming</div>
-          <h3>CPS Tester</h3>
-          <p>Clicks per second test.</p>
+          <div>
+            <div class="tag">Gaming</div>
+            <h3>CPS Tester</h3>
+            <p>Clicks per second test.</p>
+          </div>
           <div class="row">
             <div class="pill">Gaming</div>
             <a class="btn track-link" href="cps-tester.html" data-tool="cps-tester">Open →</a>
           </div>
         </article>
 
-        <!-- 4 Reaction Time -->
         <article class="card">
-          <div class="tag">Gaming</div>
-          <h3>Reaction Time</h3>
-          <p>Test how fast you react.</p>
+          <div>
+            <div class="tag">Gaming</div>
+            <h3>Reaction Time</h3>
+            <p>Test how fast you react.</p>
+          </div>
           <div class="row">
             <div class="pill">Gaming</div>
             <a class="btn track-link" href="reaction-time.html" data-tool="reaction-time">Open →</a>
           </div>
         </article>
 
-        <!-- 5 Aim Trainer -->
         <article class="card">
-          <div class="tag">Gaming</div>
-          <h3>Aim Trainer</h3>
-          <p>Practice aim accuracy.</p>
+          <div>
+            <div class="tag">Gaming</div>
+            <h3>Aim Trainer</h3>
+            <p>Practice aim accuracy.</p>
+          </div>
           <div class="row">
             <div class="pill">Gaming</div>
             <a class="btn track-link" href="aim-trainer.html" data-tool="aim-trainer">Open →</a>
           </div>
         </article>
 
-        <!-- 6 BMI -->
         <article class="card">
-          <div class="tag">Health</div>
-          <h3>BMI Calculator</h3>
-          <p>Body mass index calculation.</p>
+          <div>
+            <div class="tag">Health</div>
+            <h3>BMI Calculator</h3>
+            <p>Body mass index calculation.</p>
+          </div>
           <div class="row">
             <div class="pill">Health</div>
             <a class="btn track-link" href="bmi-calculator.html" data-tool="bmi-calculator">Open →</a>
           </div>
         </article>
 
-        <!-- 7 Unit Converter -->
         <article class="card">
-          <div class="tag">Converter</div>
-          <h3>Unit Converter</h3>
-          <p>Convert units instantly.</p>
+          <div>
+            <div class="tag">Converter</div>
+            <h3>Unit Converter</h3>
+            <p>Convert units instantly.</p>
+          </div>
           <div class="row">
             <div class="pill">Utility</div>
             <a class="btn track-link" href="unit-converter.html" data-tool="unit-converter">Open →</a>
           </div>
         </article>
 
-        <!-- 8 Random Number -->
         <article class="card">
-          <div class="tag">Utility</div>
-          <h3>Random Number Generator</h3>
-          <p>Generate random numbers.</p>
+          <div>
+            <div class="tag">Utility</div>
+            <h3>Random Number Generator</h3>
+            <p>Generate random numbers.</p>
+          </div>
           <div class="row">
             <div class="pill">Utility</div>
             <a class="btn track-link" href="random-number.html" data-tool="random-number">Open →</a>
           </div>
         </article>
 
-        <!-- 9 Timer -->
         <article class="card">
-          <div class="tag">Timer</div>
-          <h3>Timer</h3>
-          <p>Simple countdown timer.</p>
+          <div>
+            <div class="tag">Timer</div>
+            <h3>Timer</h3>
+            <p>Simple countdown timer.</p>
+          </div>
           <div class="row">
             <div class="pill">Utility</div>
             <a class="btn track-link" href="timer.html" data-tool="timer">Open →</a>
           </div>
         </article>
 
-        <!-- 10 Minecraft Converter -->
         <article class="card">
-          <div class="tag">Minecraft</div>
-          <h3>Minecraft Coordinates</h3>
-          <p>Overworld ↔ Nether converter.</p>
+          <div>
+            <div class="tag">Minecraft</div>
+            <h3>Minecraft Coordinates</h3>
+            <p>Overworld ↔ Nether converter.</p>
+          </div>
           <div class="row">
             <div class="pill">Gaming</div>
             <a class="btn track-link" href="mc-coordinates.html" data-tool="mc-coordinates">Open →</a>
           </div>
         </article>
 
-        <!-- NEW: Coin Toss -->
         <article class="card">
-          <div class="tag">Fun</div>
-          <h3>Coin Toss — Heads or Tails</h3>
-          <p>Flip a coin with 3D animation, call heads/tails, share and save history.</p>
+          <div>
+            <div class="tag">Fun</div>
+            <h3>Coin Toss — Heads or Tails</h3>
+            <p>Flip a coin with 3D animation, call heads/tails, share and save history.</p>
+          </div>
           <div class="row">
             <div class="pill">Game</div>
             <a class="btn track-link" href="coin-toss.html" data-tool="coin-toss">Open →</a>
@@ -300,18 +335,26 @@
         </article>
 
       </div>
+
+      <footer>
+        <div>© ZentroTools</div>
+        <div>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="404.html">404</a>
+        </div>
+      </footer>
+
     </main>
   </div>
 
-  <!-- Tiny script to send click events to GA for each "Open" link -->
+  <!-- GA click-tracker for "Open" links (non-blocking) -->
   <script>
     (function(){
-      // attach click handlers to links with class "track-link"
       const links = document.querySelectorAll('.track-link');
       links.forEach(link=>{
         link.addEventListener('click', function(e){
           const tool = this.dataset.tool || this.getAttribute('href');
-          // send an event to GA (non-blocking)
           try{
             gtag('event', 'tool_open', {
               'tool_name': tool,
@@ -319,9 +362,8 @@
               'transport_type': 'beacon'
             });
           }catch(err){
-            // ignore if gtag isn't ready
+            // ignore if gtag not ready
           }
-          // allow normal navigation to proceed
         });
       });
     })();
