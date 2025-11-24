@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Random Number Generator — Pick One or Many Numbers | ZentroTools</title>
 
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RM8LRNVVZT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RM8LRNVVZT');
+</script>
+<!-- End Google Analytics -->
+
 <!-- SEO -->
 <meta name="description" content="Random Number Generator — pick one or many random numbers between any range. Options: no repeats, copy, and history. Fast & mobile friendly." />
 <meta name="keywords" content="random number generator, RNG, generate random number, no repeat random, pick random numbers, random number tool" />
@@ -115,10 +125,8 @@ input[type="number"], select{flex:1;padding:10px;border-radius:10px;border:none;
 
     const out = [];
     if(noRepeatEl.checked){
-      // efficient no-repeat by shuffling small array
       const pool = [];
       for(let i=min;i<=max;i++) pool.push(i);
-      // Fisher–Yates partial shuffle
       for(let i=pool.length-1;i>0 && out.length<count;i--){
         const j = Math.floor(Math.random()*(i+1));
         [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -169,4 +177,4 @@ input[type="number"], select{flex:1;padding:10px;border-radius:10px;border:none;
 })();
 </script>
 </body>
-  </html>
+</html>
