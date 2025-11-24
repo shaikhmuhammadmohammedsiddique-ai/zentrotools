@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Minecraft Coordinates Converter · ZentroTools</title>
 
+<!-- Google Analytics (gtag) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RM8LRNVVZT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RM8LRNVVZT');
+</script>
+
 <!-- SEO -->
 <meta name="description" content="Minecraft Coordinates Converter — convert Overworld ⇄ Nether coordinates using the 8× scale. Supports custom rounding, copy result and history." />
 <meta name="keywords" content="minecraft coordinates converter, overworld to nether, nether to overworld, minecraft coords, portal coordinates" />
@@ -203,6 +212,22 @@ input[type="number"], select, input[type="text"]{flex:1;padding:10px;border-radi
     if(history.length > 60) history.pop();
     localStorage.setItem('zt_mc_coords_history', JSON.stringify(history));
     renderHistory();
+
+    // analytics event
+    try {
+      if (typeof gtag === 'function') {
+        gtag('event', 'mc_coords_converted', {
+          conversion_direction: dir,
+          label: label || '(none)',
+          input_x: x,
+          input_y: y,
+          input_z: z,
+          output_x: rx,
+          output_y: ry,
+          output_z: rz
+        });
+      }
+    } catch(e){ /* ignore analytics errors */ }
   }
 
   function renderHistory(){
