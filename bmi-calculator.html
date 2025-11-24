@@ -3,6 +3,16 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RM8LRNVVZT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RM8LRNVVZT');
+</script>
+
 <title>BMI Calculator — Body Mass Index & Healthy Range | ZentroTools</title>
 
 <!-- SEO -->
@@ -10,16 +20,6 @@
 <meta name="keywords" content="BMI calculator, body mass index, calculate BMI, healthy weight range, BMI categories, BMI tool" />
 <meta name="robots" content="index, follow" />
 <meta name="theme-color" content="#020617" />
-<link rel="canonical" href="https://zentrotools.xyz/bmi-calculator.html" />
-
-<!-- Social preview -->
-<meta property="og:title" content="BMI Calculator — ZentroTools" />
-<meta property="og:description" content="Calculate your BMI using metric or imperial units. See category and healthy weight range. Fast & mobile friendly." />
-<meta property="og:type" content="website" />
-<meta property="og:site_name" content="ZentroTools" />
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="BMI Calculator — ZentroTools" />
-<meta name="twitter:description" content="Calculate your BMI using metric or imperial units. See category and healthy weight range. Fast & mobile friendly." />
 
 <style>
 :root{
@@ -47,6 +47,7 @@ input[type="number"], select{flex:1;padding:12px;border-radius:10px;border:none;
 .back{display:block;text-align:center;margin-top:12px;color:var(--accent);text-decoration:none;font-weight:700}
 </style>
 </head>
+
 <body>
   <div class="wrap">
     <main class="card" role="main" aria-label="BMI Calculator">
@@ -59,28 +60,28 @@ input[type="number"], select{flex:1;padding:12px;border-radius:10px;border:none;
       </div>
 
       <div style="display:flex;gap:8px;margin-bottom:8px">
-        <button id="unitMetric" class="btn ghost" style="flex:1" aria-pressed="true">Metric (kg, m)</button>
-        <button id="unitImp" class="btn ghost" style="flex:1" aria-pressed="false">Imperial (lb, in)</button>
+        <button id="unitMetric" class="btn ghost" aria-pressed="true">Metric (kg, m)</button>
+        <button id="unitImp" class="btn ghost" aria-pressed="false">Imperial (lb, in)</button>
       </div>
 
       <div id="metricInputs">
-        <div class="row"><label for="kg">Weight (kg)</label><input id="kg" type="number" step="0.1" value="60" inputmode="decimal"></div>
-        <div class="row"><label for="m">Height (m)</label><input id="m" type="number" step="0.01" value="1.65" inputmode="decimal"></div>
+        <div class="row"><label>Weight (kg)</label><input id="kg" type="number" step="0.1" value="60"></div>
+        <div class="row"><label>Height (m)</label><input id="m" type="number" step="0.01" value="1.65"></div>
       </div>
 
       <div id="impInputs" style="display:none">
-        <div class="row"><label for="lb">Weight (lb)</label><input id="lb" type="number" step="0.1" value="132" inputmode="decimal"></div>
-        <div class="row"><label for="inches">Height (in)</label><input id="inches" type="number" step="0.1" value="65" inputmode="decimal"></div>
+        <div class="row"><label>Weight (lb)</label><input id="lb" type="number" step="0.1" value="132"></div>
+        <div class="row"><label>Height (in)</label><input id="inches" type="number" step="0.1" value="65"></div>
       </div>
 
-      <div class="controls" role="group" aria-label="Calculator actions">
+      <div class="controls">
         <button id="calcBtn" class="btn">Calculate</button>
         <button id="clearBtn" class="btn ghost">Clear</button>
       </div>
 
-      <div id="result" class="result" role="status" aria-live="polite">—</div>
-      <div id="cat" class="cat" aria-hidden="true"></div>
-      <div id="range" class="cat" style="font-size:13px" aria-hidden="true"></div>
+      <div id="result" class="result">—</div>
+      <div id="cat" class="cat"></div>
+      <div id="range" class="cat" style="font-size:13px"></div>
 
       <a class="back" href="./index.html">← Back to Tools</a>
     </main>
@@ -108,80 +109,55 @@ input[type="number"], select{flex:1;padding:12px;border-radius:10px;border:none;
 
   function setMode(md){
     mode = md;
-    if(md === 'metric'){
-      metricInputs.style.display = '';
-      impInputs.style.display = 'none';
-      unitMetric.setAttribute('aria-pressed','true');
-      unitImp.setAttribute('aria-pressed','false');
-    } else {
-      metricInputs.style.display = 'none';
-      impInputs.style.display = '';
-      unitImp.setAttribute('aria-pressed','true');
-      unitMetric.setAttribute('aria-pressed','false');
-    }
+    metricInputs.style.display = md === 'metric' ? '' : 'none';
+    impInputs.style.display = md === 'metric' ? 'none' : '';
+    unitMetric.setAttribute('aria-pressed', md === 'metric');
+    unitImp.setAttribute('aria-pressed', md === 'imp');
     resultEl.textContent = '—';
     catEl.textContent = '';
     rangeEl.textContent = '';
-    catEl.setAttribute('aria-hidden','true');
-    rangeEl.setAttribute('aria-hidden','true');
   }
 
-  unitMetric.addEventListener('click', ()=> setMode('metric'));
-  unitImp.addEventListener('click', ()=> setMode('imp'));
+  unitMetric.onclick = ()=> setMode('metric');
+  unitImp.onclick = ()=> setMode('imp');
 
   function calcBMI(){
     let bmi;
     if(mode === 'metric'){
       const w = parseFloat(kg.value);
       const h = parseFloat(m.value);
-      if(isNaN(w) || isNaN(h) || h <= 0){ resultEl.textContent = 'Enter valid weight & height'; return; }
+      if(!w || !h) return resultEl.textContent = 'Enter valid values';
       bmi = w / (h*h);
     } else {
       const w = parseFloat(lb.value);
       const h = parseFloat(inches.value);
-      if(isNaN(w) || isNaN(h) || h <= 0){ resultEl.textContent = 'Enter valid weight & height'; return; }
-      // convert to metric: lb -> kg (lb * 0.45359237), inches -> meters (in * 0.0254)
+      if(!w || !h) return resultEl.textContent = 'Enter valid values';
       const kgv = w * 0.45359237;
       const mv = h * 0.0254;
       bmi = kgv / (mv*mv);
     }
 
-    const bmiRounded = +bmi.toFixed(2);
-    resultEl.textContent = 'BMI: ' + bmiRounded;
-    resultEl.setAttribute('aria-live','polite');
+    const b = bmi.toFixed(2);
+    resultEl.textContent = "BMI: " + b;
 
-    // category
-    let category = '';
-    if(bmi < 18.5) category = 'Underweight';
-    else if(bmi < 25) category = 'Normal weight';
-    else if(bmi < 30) category = 'Overweight';
-    else category = 'Obese';
+    let cat = "";
+    if(bmi < 18.5) cat = "Underweight";
+    else if(bmi < 25) cat = "Normal";
+    else if(bmi < 30) cat = "Overweight";
+    else cat = "Obese";
 
-    catEl.textContent = category;
-    catEl.setAttribute('aria-hidden','false');
+    catEl.textContent = cat;
 
-    // healthy weight range for given height (BMI 18.5 - 24.9)
-    let hMeters;
-    if(mode === 'metric') hMeters = parseFloat(m.value);
-    else hMeters = parseFloat(inches.value) * 0.0254;
-
-    const lowKg = 18.5 * hMeters * hMeters;
-    const highKg = 24.9 * hMeters * hMeters;
-    rangeEl.textContent = `Healthy range: ${lowKg.toFixed(1)} kg — ${highKg.toFixed(1)} kg (${(lowKg*2.20462).toFixed(1)} lb — ${(highKg*2.20462).toFixed(1)} lb)`;
-    rangeEl.setAttribute('aria-hidden','false');
+    let heightM = mode === "metric" ? parseFloat(m.value) : parseFloat(inches.value) * 0.0254;
+    const low = 18.5 * heightM * heightM;
+    const high = 24.9 * heightM * heightM;
+    rangeEl.textContent = `Healthy range: ${low.toFixed(1)} kg — ${high.toFixed(1)} kg`;
   }
 
-  calcBtn.addEventListener('click', calcBMI);
-  clearBtn.addEventListener('click', ()=>{
-    kg.value = ''; m.value = ''; lb.value = ''; inches.value = '';
-    resultEl.textContent = '—'; catEl.textContent = ''; rangeEl.textContent = '';
-    catEl.setAttribute('aria-hidden','true');
-    rangeEl.setAttribute('aria-hidden','true');
-  });
+  calcBtn.onclick = calcBMI;
+  clearBtn.onclick = ()=>{ kg.value=''; m.value=''; lb.value=''; inches.value=''; resultEl.textContent='—'; catEl.textContent=''; rangeEl.textContent=''; };
 
-  // init
   setMode('metric');
-
 })();
 </script>
 </body>
