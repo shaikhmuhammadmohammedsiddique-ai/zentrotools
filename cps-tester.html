@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>CPS Tester — Clicks Per Second Test | ZentroTools</title>
 
+<!-- Google Analytics (gtag) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RM8LRNVVZT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RM8LRNVVZT');
+</script>
+
 <!-- Primary SEO -->
 <meta name="description" content="CPS Tester - measure your clicks per second. Tap or click the big button to get your CPS, highest score, average and history. Mobile friendly." />
 <meta name="keywords" content="cps tester, clicks per second, click test, reaction, gaming tools, cps test mobile" />
@@ -275,6 +284,17 @@
 
     // show modal with details and block immediate restart
     showModal(attempt);
+
+    // Send an analytics event for completed attempt
+    try {
+      if (typeof gtag === 'function') {
+        gtag('event', 'cps_test_complete', {
+          value: attempt.cps,
+          clicks: attempt.clicks,
+          duration: parseFloat(attempt.time)
+        });
+      }
+    } catch(e){ /* ignore */ }
   }
 
   function showModal(attempt){
@@ -327,6 +347,13 @@
     const elapsed = Math.max(0.001, (performance.now() - startTime) / 1000);
     const cpsLive = clicks / elapsed;
     cpsEl.textContent = cpsLive.toFixed(2);
+
+    // Optional: send analytics event on start/first tap
+    try {
+      if (typeof gtag === 'function' && clicks === 1) {
+        gtag('event', 'cps_test_start', { mode: modes[modeIndex] });
+      }
+    } catch(e){ /* ignore */ }
   }
 
   // events
@@ -391,4 +418,4 @@
 })();
 </script>
 </body>
-          </html>
+  </html>
